@@ -3,6 +3,7 @@ plugins {
     alias(libs.plugins.android.application)
     alias(libs.plugins.kotlin.android)
     alias(libs.plugins.kotlin.parcelize)
+    alias(libs.plugins.kotlin.serialization)
     alias(libs.plugins.kapt)
     alias(libs.plugins.ksp)
     alias(libs.plugins.hilt)
@@ -143,6 +144,9 @@ dependencies {
     implementation(libs.coroutines.core)
     implementation(libs.coroutines.android)
 
+    // arrow
+    implementation(libs.arrow.core)
+
     // WorkManager
     implementation(libs.androidx.work.manager)
     implementation(libs.work.testing)
@@ -163,8 +167,11 @@ dependencies {
 
     implementation(libs.ktor.core)
     implementation(libs.ktor.android)
+    implementation(libs.ktor.okhttp)
     implementation(libs.ktor.logging)
     implementation(libs.ktor.serialization)
+    implementation(libs.ktor.serialization.json)
+    implementation(libs.ktor.content.negotiation)
 //    implementation("com.github.haroldadmin:NetworkResponseAdapter:4.2.2")
 
     // Coil Image loading

@@ -11,10 +11,13 @@ targetSdk = "33"
 kotlin = "1.8.10"
 coroutines = "1.7.1"
 kotlinx_immutable = "0.3.5"
-ksp = "1.8.0-1.0.9"
+ksp = "1.8.10-1.0.9"
 android-gradle-plugin = "8.0.1"
 gradle-versions = "0.46.0"
 version-catalog-update = "0.8.0"
+
+arrow-core = "1.2.0-RC"
+arrow-fx = "1.2.0-RC"
 
 androidx-corektx = "1.10.1"
 androidx-appcompat = "1.6.1"
@@ -87,6 +90,9 @@ kotlinx-collections-immutable = { module = "org.jetbrains.kotlinx:kotlinx-collec
 coroutines_core = { module = "org.jetbrains.kotlinx:kotlinx-coroutines-core", version.ref = "coroutines"}
 coroutines-android = { module = "org.jetbrains.kotlinx:kotlinx-coroutines-android", version.ref = "coroutines" }
 coroutines-test = { module = "org.jetbrains.kotlinx:kotlinx-coroutines-test", version.ref = "coroutines" }
+
+arrow-core = { module = "io.arrow-kt:arrow-core" , version.ref = "arrow-core" }
+arrow-fx-coroutines = { module = "io.arrow-kt:arrow-fx-coroutines", version.ref = "arrow-fx" }
 
 androidx-core-ktx = { module = "androidx.core:core-ktx", version.ref = "androidx-corektx" }
 androidx-appcompat = { module = "androidx.appcompat:appcompat", version.ref = "androidx-appcompat" }
@@ -186,7 +192,10 @@ timber = { module = "com.jakewharton.timber:timber", version.ref = "timber"}
 
 ktor-core = { module = "io.ktor:ktor-client-core", version.ref = "ktor" }
 ktor-android = { module = "io.ktor:ktor-client-android", version.ref = "ktor" }
+ktor-okhttp = { module = "io.ktor:ktor-client-okhttp", version.ref = "ktor" }
 ktor-serialization = { module = "io.ktor:ktor-client-serialization", version.ref = "ktor" }
+ktor-serialization-json = { module = "io.ktor:ktor-serialization-kotlinx-json", version.ref = "ktor" }
+ktor-content-negotiation = { module = "io.ktor:ktor-client-content-negotiation", version.ref = "ktor"}
 ktor-logging = { module = "io.ktor:ktor-client-logging", version.ref = "ktor" }
 
 junit = { module = "junit:junit", version.ref = "junit" }
@@ -210,6 +219,7 @@ hilt = { id = "com.google.dagger.hilt.android", version.ref = "hilt" }
 kapt = { id = "org.jetbrains.kotlin.kapt", version.ref = "kotlin" }
 kotlin-android = { id = "org.jetbrains.kotlin.android", version.ref = "kotlin" }
 kotlin-parcelize = { id = "org.jetbrains.kotlin.plugin.parcelize", version.ref = "kotlin" }
+kotlin-serialization = { id = "org.jetbrains.kotlin.plugin.serialization", version.ref = "kotlin"}
 ksp = { id = "com.google.devtools.ksp", version.ref = "ksp" }
 secrets = { id = "com.google.android.libraries.mapsplatform.secrets-gradle-plugin", version.ref = "secrets" }
 version-catalog-update = { id = "nl.littlerobots.version-catalog-update", version.ref = "version-catalog-update" }
