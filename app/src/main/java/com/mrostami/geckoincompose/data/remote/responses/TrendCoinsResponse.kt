@@ -1,14 +1,21 @@
 package com.mrostami.geckoin.data.remote.responses
 
 import com.google.gson.annotations.SerializedName
+import com.mrostami.geckoincompose.model.Coin
 import com.mrostami.geckoincompose.model.TrendCoin
+import kotlinx.serialization.SerialName
+import kotlinx.serialization.Serializable
 
+@Serializable
 data class TrendCoinsResponse(
-    @SerializedName("coins")
-    val coinItems: List<CoinItem>?
+    @SerialName("coins")
+    val coinItems: List<CoinItem>?,
+    @SerialName("exchanges")
+    val exchanges: List<Coin>?
 )
 
+@Serializable
 data class CoinItem(
-    @SerializedName("item")
+    @SerialName("item")
     val item: TrendCoin?
 )

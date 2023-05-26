@@ -3,30 +3,32 @@ package com.mrostami.geckoincompose.model
 
 import androidx.room.Entity
 import androidx.room.PrimaryKey
-import com.google.gson.annotations.SerializedName
+import kotlinx.serialization.SerialName
+import kotlinx.serialization.Serializable
 
 @Entity
+@Serializable
 data class TrendCoin(
-    @SerializedName("coin_id")
+    @SerialName("coin_id")
     @PrimaryKey val coinId: Int,
-    @SerializedName("id")
+    @SerialName("id")
     val id: String?,
-    @SerializedName("large")
+    @SerialName("large")
     val large: String?,
-    @SerializedName("market_cap_rank")
+    @SerialName("market_cap_rank")
     val marketCapRank: Int?,
-    @SerializedName("name")
+    @SerialName("name")
     val name: String?,
-    @SerializedName("price_btc")
+    @SerialName("price_btc")
     val priceBtc: Double?,
-    @SerializedName("score")
+    @SerialName("score")
     val score: Double?,
-    @SerializedName("slug")
+    @SerialName("slug")
     val slug: String?,
-    @SerializedName("small")
+    @SerialName("small")
     val small: String?,
-    @SerializedName("symbol")
+    @SerialName("symbol")
     val symbol: String?,
-    @SerializedName("thumb")
+    @SerialName("thumb")
     val thumb: String?
 )
