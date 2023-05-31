@@ -13,18 +13,18 @@ import com.google.accompanist.navigation.animation.rememberAnimatedNavController
 import com.mrostami.geckoincompose.ui.navigation.AppNavigation
 import com.mrostami.geckoincompose.ui.navigation.MainBottomBar
 import com.mrostami.geckoincompose.ui.navigation.MainScreen
-import com.mrostami.geckoincompose.ui.theme.GeckoinComposeTheme
+import com.mrostami.geckoincompose.ui.theme.GeckoinTheme
 
 //@ExperimentalAnimationApi
 @Composable
 fun GeckoinApp(
 
 ) {
-    GeckoinComposeTheme {
+    GeckoinTheme {
         val navController = rememberNavController()
         val showBottomNav = rememberSaveable { mutableStateOf(true) }
         Scaffold (
-            containerColor = MaterialTheme.colorScheme.background,
+            containerColor = GeckoinTheme.colorScheme.background,
             bottomBar = {
                 MainBottomBar(navController = navController)
             }

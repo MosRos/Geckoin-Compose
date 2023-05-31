@@ -28,6 +28,7 @@ import androidx.navigation.NavGraph.Companion.findStartDestination
 import androidx.navigation.NavHostController
 import androidx.navigation.compose.currentBackStackEntryAsState
 import com.mrostami.geckoincompose.R
+import com.mrostami.geckoincompose.ui.theme.GeckoinTheme
 
 
 sealed class MainScreen(
@@ -99,17 +100,17 @@ fun RowScope.addItem(
             BottomNavLabel(title = stringResource(id = screen.title))
         },
         selected = currentDestination?.hierarchy?.any { it.route == screen.route } == true,
-        selectedContentColor = MaterialTheme.colors.primary,
-        unselectedContentColor = MaterialTheme.colors.onBackground,
+        selectedContentColor = GeckoinTheme.colorScheme.primary,
+        unselectedContentColor = GeckoinTheme.customColors.textSecondary,
         onClick = {
             if (currentDestination?.route != screen.route) {
-            }
-            navHostController.navigate(screen.route) {
-                popUpTo(navHostController.graph.findStartDestination().id) {
-                    saveState = true
+                navHostController.navigate(screen.route) {
+                    popUpTo(navHostController.graph.findStartDestination().id) {
+                        saveState = true
+                    }
+                    launchSingleTop = true
+                    restoreState = true
                 }
-                launchSingleTop = true
-                restoreState = true
             }
         },
         icon = {

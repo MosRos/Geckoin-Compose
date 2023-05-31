@@ -1,7 +1,5 @@
 package com.mrostami.geckoincompose.ui.navigation
 
-import androidx.compose.animation.ExperimentalAnimationApi
-import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.stringResource
@@ -10,8 +8,7 @@ import androidx.navigation.NavGraphBuilder
 import androidx.navigation.NavHostController
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
-import com.google.accompanist.navigation.animation.AnimatedNavHost
-import com.mrostami.geckoincompose.ui.Home.HomeScreen
+import com.mrostami.geckoincompose.ui.home.HomeScreen
 
 object MainDestinations {
     const val HOME_ROUTE = "home"
