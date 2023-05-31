@@ -96,7 +96,10 @@ dependencies {
     implementation(libs.androidx.compose.animation)
 
     implementation(libs.accompanist.pager)
+    implementation(libs.accompanist.pager.indicator)
     implementation(libs.accompanist.systemuicontroller)
+    implementation(libs.accompanist.navigation.animation)
+    implementation(libs.accompanist.navigation.material)
 
     implementation(libs.androidx.lifecycle.runtime.compose)
 
@@ -183,6 +186,13 @@ dependencies {
 
     // Timber Logger
     implementation(libs.timber)
+
+    implementation(libs.junit)
+    implementation(libs.robolectric)
+    implementation(libs.androidx.test.core)
+    implementation(libs.androidx.test.runner)
+    implementation(libs.androidx.test.ext.junit)
+    implementation(libs.androidx.test.espresso.core)
 }
 
 tasks.withType<Test>().configureEach {

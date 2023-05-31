@@ -4,14 +4,14 @@ import android.content.Context
 import android.content.Intent
 import android.net.Uri
 import android.util.TypedValue
-import com.mrostami.geckoincompose.GeckoinApp
+import com.mrostami.geckoincompose.GeckoinApplication
 
 
 fun dpToPx(dp: Float) =
     TypedValue.applyDimension(
         TypedValue.COMPLEX_UNIT_DIP,
         dp,
-        GeckoinApp.getInstance().getAppContext().resources.displayMetrics
+        GeckoinApplication.getInstance().getAppContext().resources.displayMetrics
     )
 
 fun dpToPx(context: Context, dp: Float) =

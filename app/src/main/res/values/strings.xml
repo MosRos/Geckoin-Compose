@@ -1,3 +1,35 @@
 <resources>
     <string name="app_name">Geckoin Compose</string>
+    <string name="title_home">Home</string>
+    <string name="title_search">Search</string>
+    <string name="title_market">Market</string>
+    <string name="title_settings">Settings</string>
+    <string name="coin_details">Coin Details</string>
+
+    <string name="about">About</string>
+    <string name="about_info">“Geckoin” is a simple app that provides
+        basic information about cryptocurrency market,
+        top coins list and basic info about every token.
+        It is powered by "CoinGecko" public API. </string>
+    <string name="developer">Developer</string>
+    <string name="developer_info">
+        Hi,
+        I am Moslem Rostami, an experienced android developer.
+        I developed this app for some educational purposes,
+        and also I am interested in blockchain technology and cryptocurrencies.
+        You can see my "LinkedIn" profile here
+    </string>
+    <string name="open_linkedin">Visit LinkedIn</string>
+    <string name="ok">Ok</string>
+
+    <string name="market_info">Market Info</string>
+    <string name="market_ranking">Market Ranking</string>
+    <string name="bitcoin">Bitcoin</string>
+    <string name="dominance">Dominance</string>
+    <string name="market_dominance">Market dominance</string>
+    <string name="trend_coins">Trend Coins</string>
+    <string name="btc_24_h_price_chart">24h price chart</string>
+    <string name="retry">Retry</string>
+    <string name="search">Search</string>
+    <string name="more">More</string>
 </resources>

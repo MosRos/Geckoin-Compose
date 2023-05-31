@@ -13,14 +13,14 @@ import javax.inject.Inject
 
 
 @HiltAndroidApp
-class GeckoinApp : Application(), Configuration.Provider {
+class GeckoinApplication : Application(), Configuration.Provider {
 
     companion object {
         const val DEFAULT_THEME_MODE: Int = AppCompatDelegate.MODE_NIGHT_FOLLOW_SYSTEM
 
-        private lateinit var instance: GeckoinApp
+        private lateinit var instance: GeckoinApplication
             private set
-        fun getInstance() : GeckoinApp {
+        fun getInstance() : GeckoinApplication {
             return instance
         }
     }
