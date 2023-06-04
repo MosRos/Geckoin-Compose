@@ -53,7 +53,7 @@ abstract class RepositoryResourceAdapter<in P : Any?, T : Any?, U : Any, V : Any
         if (validateCache(cachedData) && cachedData != null) {
             emit(Result.Success(cachedData))
         } else {
-            emit(Result.Empty)
+            emit(Result.Error(exception = java.lang.Exception("Db error")))
         }
 
         if (shouldFetchFromApi() || forceRefresh) {

@@ -10,8 +10,12 @@ import com.mrostami.geckoincompose.domain.base.Result
 import com.mrostami.geckoincompose.model.GlobalMarketInfo
 import com.mrostami.geckoincompose.model.MarketCapPercentageItem
 import com.mrostami.geckoincompose.model.TrendCoin
+import com.mrostami.geckoincompose.utils.round
 import io.ktor.client.call.body
 import io.ktor.client.statement.HttpResponse
+import io.ktor.client.statement.bodyAsText
+import io.ktor.client.statement.readText
+import io.ktor.http.HttpStatusCode
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.withContext
@@ -203,9 +207,10 @@ class GlobalInfoRepositoryImpl @Inject constructor(
 //        return result
 //    }
 
-    private suspend fun saveGlobalInfo(responseBody: HttpResponse) {
+    private suspend fun saveGlobalInfo(httpResponse: HttpResponse) {
+        if (httpResponse.status != HttpStatusCode.OK) return
         try {
-            val responseData: String = responseBody.body()
+            val responseData: String = httpResponse.bodyAsText()
             var responseJson = JSONObject(responseData)
             if (responseJson.has("data")) {
                 responseJson = responseJson.getJSONObject("data")
@@ -244,7 +249,7 @@ class GlobalInfoRepositoryImpl @Inject constructor(
                 keys.forEach { k ->
                     val item = MarketCapPercentageItem(
                         coinId = k,
-                        cap = mCapPercentageJSon.getDouble(k)
+                        cap = mCapPercentageJSon.getDouble(k).round(decimals = 1)
                     )
                     mCapPercentageItems.add(item)
                 }

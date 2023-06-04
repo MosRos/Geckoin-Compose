@@ -26,7 +26,9 @@ fun GeckoinApp(
         Scaffold (
             containerColor = GeckoinTheme.colorScheme.background,
             bottomBar = {
-                MainBottomBar(navController = navController)
+                MainBottomBar(
+                    navController = navController
+                )
             }
         ) {
             AppNavigation(

@@ -1,3 +1,5 @@
+import org.gradle.kotlin.dsl.libs
+
 @Suppress("DSL_SCOPE_VIOLATION")
 plugins {
     alias(libs.plugins.android.application)
@@ -159,6 +161,7 @@ dependencies {
 
     // Dagger Hilt
     implementation(libs.hilt.android)
+    implementation(libs.androidx.hilt.navigation.compose)
     kapt(libs.hilt.compiler)
     implementation(libs.hilt.work)
     kapt(libs.hilt.ext.compiler)

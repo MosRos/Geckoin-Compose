@@ -1,9 +1,11 @@
 package com.mrostami.geckoincompose.model
 
+import androidx.compose.runtime.Immutable
 import androidx.room.Entity
 import androidx.room.PrimaryKey
 import com.mrostami.geckoincompose.model.MarketCapPercentageItem
 
+@Immutable
 @Entity
 data class GlobalMarketInfo(
     @PrimaryKey
