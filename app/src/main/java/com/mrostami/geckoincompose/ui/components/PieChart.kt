@@ -60,6 +60,7 @@ fun PieChart(
     radiusOuter: Dp = Dp(140f),
     chartBarWidth: Dp = Dp(35f),
     animDuration: Int = 1000,
+    modifier: Modifier = Modifier
 ) {
 
     val totalSum = data.values.sum()
@@ -136,14 +137,15 @@ fun PieChart(
     }
 
     Row(
-        modifier = Modifier.fillMaxWidth(),
+        modifier = Modifier
+            .fillMaxWidth()
+            .padding(Dp(12f))
+        ,
         verticalAlignment = Alignment.CenterVertically,
-        horizontalArrangement = Arrangement.Center
     ) {
         Column(
             modifier = Modifier
                 .wrapContentWidth()
-                .padding(Dp(8f)),
         ) {
             floatValue.forEachIndexed { index, value ->
                 Row(
