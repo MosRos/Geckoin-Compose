@@ -1,4 +1,4 @@
-package com.mrostami.geckoincompose.ui.home.bitcoin_widget
+package com.mrostami.geckoincompose.ui.home.bitcoin_chart
 
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope

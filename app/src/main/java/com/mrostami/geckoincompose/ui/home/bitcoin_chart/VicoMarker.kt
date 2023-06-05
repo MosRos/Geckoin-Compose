@@ -1,4 +1,4 @@
-package com.mrostami.geckoincompose.ui.home.bitcoin_widget
+package com.mrostami.geckoincompose.ui.home.bitcoin_chart
 
 /*
  * Copyright 2023 by Patryk Goworowski and Patrick Michalik.

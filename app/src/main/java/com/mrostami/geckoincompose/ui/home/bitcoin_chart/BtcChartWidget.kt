@@ -1,4 +1,4 @@
-package com.mrostami.geckoincompose.ui.home.bitcoin_widget
+package com.mrostami.geckoincompose.ui.home.bitcoin_chart
 
 import androidx.compose.foundation.BorderStroke
 import androidx.compose.foundation.Image

@@ -1,0 +1,90 @@
+package com.mrostami.geckoincompose.ui.home.tend_coins
+
+import androidx.lifecycle.ViewModel
+import androidx.lifecycle.viewModelScope
+import com.mrostami.geckoincompose.domain.base.Result
+import com.mrostami.geckoincompose.domain.usecases.TrendCoinsUseCase
+import com.mrostami.geckoincompose.model.TrendCoin
+import com.mrostami.geckoincompose.ui.base.BaseUiModel
+import dagger.hilt.android.lifecycle.HiltViewModel
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.flow.MutableStateFlow
+import kotlinx.coroutines.flow.StateFlow
+import kotlinx.coroutines.flow.collectLatest
+import kotlinx.coroutines.launch
+import javax.annotation.concurrent.Immutable
+import javax.inject.Inject
+
+@HiltViewModel
+class TrendCoinsViewModel @Inject constructor(
+    private val trendCoinsUseCase: TrendCoinsUseCase
+) : ViewModel() {
+
+    private val _uiState: MutableStateFlow<TrendCoinsUiModel> = MutableStateFlow(TrendCoinsUiModel.defaultInitiState)
+    val uiState: StateFlow<TrendCoinsUiModel> = _uiState
+
+    init {
+        getTrendCoins()
+    }
+
+    private fun getTrendCoins() {
+        viewModelScope.launch(Dispatchers.IO) {
+            trendCoinsUseCase.invoke(forceRefresh = false).collectLatest { result ->
+                when(result) {
+                    is Result.Success -> {
+                        _uiState.emit(
+                            TrendCoinsUiModel(
+                                state = BaseUiModel.State.SUCCESS,
+                                errorMessage = null,
+                                data = result.data
+                            )
+                        )
+                    }
+                    is Result.Error -> {
+                        _uiState.emit(
+                            TrendCoinsUiModel(
+                                state = BaseUiModel.State.ERROR,
+                                errorMessage = result.message ?: "Error",
+                                data = listOf()
+                            )
+                        )
+                    }
+                    is Result.Loading -> {
+                        _uiState.emit(TrendCoinsUiModel.defaultInitiState)
+                    }
+                }
+            }
+        }
+    }
+
+    fun onNewEvent(event: TrendCoinsEvents) {
+        reduce(event = event, oldState = _uiState.value)
+    }
+
+    private fun reduce(event: TrendCoinsEvents, oldState: TrendCoinsUiModel) {
+        when(event) {
+            is TrendCoinsEvents.RefreshData -> getTrendCoins()
+        }
+    }
+
+}
+
+sealed interface TrendCoinsEffects {
+    object NoEffect : TrendCoinsEffects
+}
+
+sealed interface TrendCoinsEvents {
+    object RefreshData : TrendCoinsEvents
+}
+
+@Immutable
+data class TrendCoinsUiModel(
+    override val state: BaseUiModel.State = BaseUiModel.State.LOADING,
+    override val errorMessage: String? = null,
+    override val data: List<TrendCoin> = listOf()
+    ) : BaseUiModel {
+        companion object {
+            val defaultInitiState = TrendCoinsUiModel()
+        }
+    }
+

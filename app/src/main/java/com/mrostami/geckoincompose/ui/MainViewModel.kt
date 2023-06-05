@@ -13,7 +13,6 @@ import javax.inject.Inject
 
 @HiltViewModel
 class MainViewModel @Inject constructor(
-    private val trendCoinsUseCase: TrendCoinsUseCase,
     private val remoteDataSource: RemoteDataSource
 ) : ViewModel() {
 
@@ -31,13 +30,6 @@ class MainViewModel @Inject constructor(
                     Timber.i(it.toString())
                 }
             )
-        }
-    }
-    fun getTrendCoins() {
-        viewModelScope.launch(Dispatchers.IO) {
-            trendCoinsUseCase.invoke(forceRefresh = true).collectLatest {
-                Timber.e(it.toString())
-            }
         }
     }
 }
