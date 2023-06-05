@@ -58,7 +58,7 @@ import kotlin.math.sin
 fun PieChart(
     data: Map<String, Double>,
     radiusOuter: Dp = Dp(140f),
-    chartBarWidth: Dp = Dp(35f),
+    chartBarWidth: Dp = Dp(20f),
     animDuration: Int = 1000,
     modifier: Modifier = Modifier
 ) {
@@ -111,14 +111,14 @@ fun PieChart(
     var lastValue = 0f
 
     // it is the diameter value of the Pie
-    val animateSize by animateFloatAsState(
-        targetValue = if (animationPlayed) radiusOuter.value * 2f else 0f,
-        animationSpec = tween(
-            durationMillis = animDuration,
-            delayMillis = 0,
-            easing = LinearOutSlowInEasing
-        ), label = ""
-    )
+//    val animateSize by animateFloatAsState(
+//        targetValue = if (animationPlayed) radiusOuter.value * 2f else 0f,
+//        animationSpec = tween(
+//            durationMillis = animDuration,
+//            delayMillis = 0,
+//            easing = LinearOutSlowInEasing
+//        ), label = ""
+//    )
 
     // if you want to stabilize the Pie Chart you can use value -90f
     // 90f is used to complete 1/4 of the rotation
@@ -177,7 +177,7 @@ fun PieChart(
         Spacer(modifier = Modifier.width(Dp(40f)))
         // Pie Chart using Canvas Arc
         Box(
-            modifier = Modifier.size(Dp(animateSize)),
+            modifier = Modifier.size(radiusOuter*2f),
             contentAlignment = Alignment.Center
         ) {
             Canvas(

@@ -58,7 +58,7 @@ fun TenDaysLineChart(
         Chart(
             chart = lineChart(persistentMarkers = remember(marker) {mapOf(PERSISTENT_MARKER_X to marker)}),
             model = modle,
-            startAxis = startAxis(sizeConstraint = Axis.SizeConstraint.Fraction(0.3f)),
+//            startAxis = startAxis(sizeConstraint = Axis.SizeConstraint.Fraction(0.3f)),
 //            bottomAxis = bottomAxis(guideline = null),
             marker = marker,
         )

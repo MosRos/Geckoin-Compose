@@ -4,7 +4,7 @@ import androidx.compose.runtime.Immutable
 import androidx.compose.runtime.staticCompositionLocalOf
 import androidx.compose.ui.graphics.Color
 
-val light_primary = Color(0xFF7870F1)
+val light_primary = Color(0xFF6057E1)
 val light_onPrimary = Color(0xFFFFFFFF)
 val light_primaryContainer = Color(0xFFBBB7F3)
 val light_onPrimaryContainer = Color(0xFF2B2957)
@@ -42,11 +42,11 @@ val light_down_red = Color(0XFFD32F2F)
 
 
 // dark color
-val dark_primary = Color(0xFF8888FA)
+val dark_primary = Color(0xFF675CFF)
 val dark_onPrimary = Color(0xFFFFFFFF)
 val dark_primaryContainer = Color(0xFFC8C8FA)
 val dark_onPrimaryContainer = Color(0xFF2F2F5E)
-val dark_secondary = Color(0xFF8390FA)
+val dark_secondary = Color(0xFF6575F7)
 val dark_onSecondary = Color(0xFFFFFFFF)
 val dark_secondaryContainer = Color(0xFFC3C9FA)
 val dark_onSecondaryContainer = Color(0xFF2E335E)
@@ -72,7 +72,7 @@ val dark_shadow = Color(0xFFE5E0E0)
 val dark_surfaceTint = Color(0xFF8307F0)
 
 val dark_divider = Color(0XFF3F4E5E)
-val dark_icon = Color(0XFF758697)
+val dark_icon = Color(0xFFBDC7D1)
 val dark_text_primary = Color(0XFFF8F8F8)
 val dark_text_secondary = Color(0XFFC8C8C8)
 val dark_up_green = Color(0XFF058C41)

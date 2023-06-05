@@ -8,6 +8,7 @@ import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
+import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.material3.Icon
 import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
@@ -19,8 +20,10 @@ import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.painter.Painter
+import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.layout.onSizeChanged
 import androidx.compose.ui.platform.LocalDensity
 import androidx.compose.ui.res.painterResource
@@ -29,6 +32,7 @@ import androidx.compose.ui.unit.DpSize
 import androidx.constraintlayout.compose.ConstraintLayout
 import androidx.constraintlayout.compose.Dimension
 import androidx.hilt.navigation.compose.hiltViewModel
+import coil.compose.AsyncImage
 import com.mrostami.geckoincompose.R
 import com.mrostami.geckoincompose.model.BitcoinPriceInfo
 import com.mrostami.geckoincompose.ui.components.StateView
@@ -103,11 +107,13 @@ fun BtcBasicInfoView(
         modifier = modifier.fillMaxWidth()
     ) {
         val (image, title, price, vol, cap, change, changIcon) = createRefs()
-        Image(
-            painter = painterResource(id = R.drawable.bitcoin_logo),
+        AsyncImage(
+            model = "https://assets.coingecko.com/coins/images/1/large/bitcoin.png",
             contentDescription = "bitcoin",
+            contentScale = ContentScale.Fit,
             modifier = Modifier
                 .size(Dp(40f))
+                .clip(CircleShape)
                 .constrainAs(image) {
                     start.linkTo(parent.start,  Dp(12f))
                     top.linkTo(parent.top, Dp(12f))

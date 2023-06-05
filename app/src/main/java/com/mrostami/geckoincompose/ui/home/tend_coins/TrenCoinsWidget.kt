@@ -1,18 +1,21 @@
 package com.mrostami.geckoincompose.ui.home.tend_coins
 
 import androidx.compose.foundation.BorderStroke
+import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.lazy.rememberLazyListState
+import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.material3.Divider
 import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.collectAsState
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.draw.clip
 import androidx.compose.ui.text.font.FontStyle
 import androidx.compose.ui.unit.Dp
 import androidx.constraintlayout.compose.ConstraintLayout
@@ -38,7 +41,9 @@ fun TrendCoinsWidget(
             tonalElevation = Dp(1f),
             shadowElevation = Dp(0f),
             border = BorderStroke(width = Dp(1f), color = GeckoinTheme.colorScheme.outline),
-            modifier = Modifier.padding(Dp(12f))
+            modifier = Modifier
+//                .background(color = GeckoinTheme.colorScheme.surface)
+                .padding(Dp(12f))
         ) {
 //            LazyColumn(state = listState) {
 //                items(
@@ -48,7 +53,7 @@ fun TrendCoinsWidget(
 //                    TrendCoinItemView(coin = coin)
 //                }
 //            }
-            Column {
+            Column(modifier = Modifier.background(color = GeckoinTheme.colorScheme.surface)) {
                 uiState.value.data.forEach { trendCoin ->  
                     TrendCoinItemView(coin = trendCoin)
                 }
@@ -70,6 +75,7 @@ fun TrendCoinItemView(
             contentDescription = "bitcoin",
             modifier = Modifier
                 .size(Dp(40f))
+                .clip(CircleShape)
                 .constrainAs(image) {
                     start.linkTo(parent.start, Dp(8f))
                     top.linkTo(parent.top, Dp(8f))
@@ -112,8 +118,8 @@ fun TrendCoinItemView(
             thickness = Dp(1f),
             color = GeckoinTheme.customColors.dividerColor,
             modifier = Modifier.constrainAs(divider){
-                start.linkTo(name.start)
-                end.linkTo(rank.start, Dp(8f))
+                start.linkTo(parent.start, Dp(32f))
+                end.linkTo(parent.end, Dp(32f))
                 bottom.linkTo(parent.bottom)
             }
         )

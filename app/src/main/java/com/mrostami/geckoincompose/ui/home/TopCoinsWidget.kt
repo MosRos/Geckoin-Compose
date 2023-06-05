@@ -101,6 +101,6 @@ fun DominanceChart(
     PieChart(
         data = caps,
         radiusOuter = Dp((boxHeight.value * 0.35).toFloat()),
-        chartBarWidth = Dp(35f)
+        chartBarWidth = Dp(33f)
     )
 }
