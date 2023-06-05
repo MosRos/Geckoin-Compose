@@ -3,7 +3,9 @@ package com.mrostami.geckoincompose.data.remote
 import arrow.core.Either
 import com.mrostami.geckoin.data.remote.responses.CoinGeckoApiError
 import com.mrostami.geckoin.data.remote.responses.CoinGeckoPingResponse
+import com.mrostami.geckoin.data.remote.responses.PriceChartResponse
 import com.mrostami.geckoin.data.remote.responses.TrendCoinsResponse
+import com.mrostami.geckoincompose.model.BitcoinSimplePriceInfoResponse
 import com.mrostami.geckoincompose.model.Coin
 import io.ktor.client.statement.HttpResponse
 
@@ -24,6 +26,9 @@ interface CoinGeckoService {
     // Top Search and Trend coins
 //    @GET("search/trending")
     suspend fun getTrendingCoins() : Either<CoinGeckoApiError, TrendCoinsResponse>
+
+    suspend fun getBitcoinSimplePrice() : Either<CoinGeckoApiError, BitcoinSimplePriceInfoResponse>
+    suspend fun getPriceChartInfo(coinId: String) : Either<CoinGeckoApiError, PriceChartResponse>
 
     // Price Info for a coin
 //    @GET("simple/price")

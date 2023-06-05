@@ -185,6 +185,9 @@ dependencies {
     implementation(libs.coil.kt.compose)
 
     // Charts
+    implementation(libs.vico.core)
+    implementation(libs.vico.compose)
+    implementation(libs.vico.style.m3)
 //    implementation("com.github.PhilJay:MPAndroidChart:v3.1.0")
 
     // Timber Logger

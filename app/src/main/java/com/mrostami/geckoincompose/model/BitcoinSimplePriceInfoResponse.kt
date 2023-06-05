@@ -1,8 +1,10 @@
 package com.mrostami.geckoincompose.model
 
-import com.google.gson.annotations.SerializedName
+import kotlinx.serialization.SerialName
+import kotlinx.serialization.Serializable
 
+@Serializable
 data class BitcoinSimplePriceInfoResponse(
-    @SerializedName("bitcoin") val bitcoin: SimplePriceInfo?,
+    @SerialName("bitcoin") val bitcoin: SimplePriceInfo?,
 //    @SerializedName("ethereum") val ethereum: SimpleCoinInfo?
 )

@@ -2,13 +2,17 @@ package com.mrostami.geckoincompose.data.repositories
 
 import arrow.core.Either
 import com.mrostami.geckoin.data.remote.responses.CoinGeckoApiError
+import com.mrostami.geckoin.data.remote.responses.PriceChartResponse
 import com.mrostami.geckoin.data.remote.responses.TrendCoinsResponse
 import com.mrostami.geckoincompose.data.local.LocalDataSource
 import com.mrostami.geckoincompose.data.remote.RemoteDataSource
 import com.mrostami.geckoincompose.domain.GlobalInfoRepository
 import com.mrostami.geckoincompose.domain.base.Result
+import com.mrostami.geckoincompose.model.BitcoinPriceInfo
+import com.mrostami.geckoincompose.model.BitcoinSimplePriceInfoResponse
 import com.mrostami.geckoincompose.model.GlobalMarketInfo
 import com.mrostami.geckoincompose.model.MarketCapPercentageItem
+import com.mrostami.geckoincompose.model.PriceEntry
 import com.mrostami.geckoincompose.model.TrendCoin
 import com.mrostami.geckoincompose.utils.round
 import io.ktor.client.call.body
@@ -114,98 +118,98 @@ class GlobalInfoRepositoryImpl @Inject constructor(
         return result.invoke(Any())
     }
 
-//    override fun getBtcDailyPriceInfo(forceRefresh: Boolean): Flow<Result<BitcoinPriceInfo>> {
-//        val result =
-//            object :
-//                RepositoryResourceAdapter<Any, BitcoinPriceInfo, BitcoinSimplePriceInfoResponse, CoinGeckoApiError>(
-//                    rateLimiter = DEFAULT_RATE_LIMIT,
-//                    forceRefresh = forceRefresh
-//                ) {
-//                override suspend fun getFromDatabase(): BitcoinPriceInfo? {
-//                    return try {
-//                        localDataSource.getBtcPriceInfo(id = bitcoinId)
-//                    } catch (e: Exception) {
-//                        Timber.e(e)
-//                        null
-//                    }
-//                }
-//
-//                override suspend fun validateCache(cachedData: BitcoinPriceInfo?): Boolean {
-//                    return cachedData != null
-//                }
-//
-//                override fun shouldFetchFromApi(): Boolean {
-//                    val trigger: Long = System.currentTimeMillis() - btcPriceLRT
-//                    return forceRefresh || trigger > rateLimiter
-//                }
-//
-//                override suspend fun getFromApi(): Either<CoinGeckoApiError, BitcoinSimplePriceInfoResponse> {
-//                    btcPriceLRT = System.currentTimeMillis()
-//                    return remoteDataSource.getBitcoinSimplePrice()
-//                }
-//
-//                override suspend fun persistData(apiData: BitcoinSimplePriceInfoResponse) {
-//                    withContext(Dispatchers.IO) {
-//                        apiData.bitcoin?.let { btc ->
-//                            localDataSource.putBtcPriceInfo(info = BitcoinPriceInfo(
-//                                info = btc
-//                            )
-//                            )
-//                        }
-//                    }
-//                }
-//            }
-//
-//        return result.invoke(Any())
-//    }
-//
-//    override fun getBtcMarketChartInfo(forceRefresh: Boolean): Flow<Result<List<PriceEntry>>> {
-//        val result = object :
-//                RepositoryResourceAdapter<Any, List<PriceEntry>, PriceChartResponse, CoinGeckoApiError>(
-//                    rateLimiter = DEFAULT_RATE_LIMIT,
-//                    forceRefresh = forceRefresh
-//                ) {
-//                override suspend fun getFromDatabase(): List<PriceEntry>? {
-//                    return try {
-//                        localDataSource.getPriceChartEntries(id = bitcoinId)
-//                    } catch (e: Exception) {
-//                        Timber.e(e)
-//                        null
-//                    }
-//                }
-//
-//                override suspend fun validateCache(cachedData: List<PriceEntry>?): Boolean {
-//                    return cachedData != null
-//                }
-//
-//                override fun shouldFetchFromApi(): Boolean {
-//                    val trigger: Long = System.currentTimeMillis() - marketChartLRT
-//                    return forceRefresh || trigger > rateLimiter
-//                }
-//
-//                override suspend fun getFromApi(): Either<PriceChartResponse, CoinGeckoApiError> {
-//                    marketChartLRT = System.currentTimeMillis()
-//                    return remoteDataSource.getMarketChartInfo(coinId = bitcoinId)
-//                }
-//
-//                override suspend fun persistData(apiData: PriceChartResponse) {
-//                    withContext(Dispatchers.IO) {
-//                        localDataSource.deletePriceChartEntries(bitcoinId)
-//                        val mapedData: List<PriceEntry> =
-//                            apiData.prices?.filterNotNull()?.map { it ->
-//                                PriceEntry(
-//                                    coinId = bitcoinId,
-//                                    timeStamp = it[0].toLong(),
-//                                    price = it[1]
-//                                )
-//                            } ?: listOf()
-//
-//                        localDataSource.putPriceEntries(mapedData)
-//                    }
-//                }
-//            }.invoke(Any())
-//        return result
-//    }
+    override fun getBtcDailyPriceInfo(forceRefresh: Boolean): Flow<Result<BitcoinPriceInfo>> {
+        val result =
+            object :
+                RepositoryResourceAdapter<Any, BitcoinPriceInfo, BitcoinSimplePriceInfoResponse, CoinGeckoApiError>(
+                    rateLimiter = DEFAULT_RATE_LIMIT,
+                    forceRefresh = forceRefresh
+                ) {
+                override suspend fun getFromDatabase(): BitcoinPriceInfo? {
+                    return try {
+                        localDataSource.getBtcPriceInfo(id = bitcoinId)
+                    } catch (e: Exception) {
+                        Timber.e(e)
+                        null
+                    }
+                }
+
+                override suspend fun validateCache(cachedData: BitcoinPriceInfo?): Boolean {
+                    return cachedData != null
+                }
+
+                override fun shouldFetchFromApi(): Boolean {
+                    val trigger: Long = System.currentTimeMillis() - btcPriceLRT
+                    return forceRefresh || trigger > rateLimiter
+                }
+
+                override suspend fun getFromApi(): Either<CoinGeckoApiError, BitcoinSimplePriceInfoResponse> {
+                    btcPriceLRT = System.currentTimeMillis()
+                    return remoteDataSource.getBitcoinSimplePrice()
+                }
+
+                override suspend fun persistData(apiData: BitcoinSimplePriceInfoResponse) {
+                    withContext(Dispatchers.IO) {
+                        apiData.bitcoin?.let { btc ->
+                            localDataSource.putBtcPriceInfo(info = BitcoinPriceInfo(
+                                info = btc
+                            )
+                            )
+                        }
+                    }
+                }
+            }
+
+        return result.invoke(Any())
+    }
+
+    override fun getBtcMarketChartInfo(forceRefresh: Boolean): Flow<Result<List<PriceEntry>>> {
+        val result = object :
+                RepositoryResourceAdapter<Any, List<PriceEntry>, PriceChartResponse, CoinGeckoApiError>(
+                    rateLimiter = DEFAULT_RATE_LIMIT,
+                    forceRefresh = forceRefresh
+                ) {
+                override suspend fun getFromDatabase(): List<PriceEntry>? {
+                    return try {
+                        localDataSource.getPriceChartEntries(id = bitcoinId)
+                    } catch (e: Exception) {
+                        Timber.e(e)
+                        null
+                    }
+                }
+
+                override suspend fun validateCache(cachedData: List<PriceEntry>?): Boolean {
+                    return cachedData != null
+                }
+
+                override fun shouldFetchFromApi(): Boolean {
+                    val trigger: Long = System.currentTimeMillis() - marketChartLRT
+                    return forceRefresh || trigger > rateLimiter
+                }
+
+                override suspend fun getFromApi(): Either<CoinGeckoApiError, PriceChartResponse> {
+                    marketChartLRT = System.currentTimeMillis()
+                    return remoteDataSource.getPriceChartInfo(coinId = bitcoinId)
+                }
+
+                override suspend fun persistData(apiData: PriceChartResponse) {
+                    withContext(Dispatchers.IO) {
+                        localDataSource.deletePriceChartEntries(bitcoinId)
+                        val mapedData: List<PriceEntry> =
+                            apiData.prices?.filterNotNull()?.map { it ->
+                                PriceEntry(
+                                    coinId = bitcoinId,
+                                    timeStamp = it[0].toLong(),
+                                    price = it[1]
+                                )
+                            } ?: listOf()
+
+                        localDataSource.putPriceEntries(mapedData)
+                    }
+                }
+            }.invoke(Any())
+        return result
+    }
 
     private suspend fun saveGlobalInfo(httpResponse: HttpResponse) {
         if (httpResponse.status != HttpStatusCode.OK) return

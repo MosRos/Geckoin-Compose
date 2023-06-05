@@ -5,6 +5,8 @@ import android.util.Log
 import androidx.appcompat.app.AppCompatDelegate
 import androidx.hilt.work.HiltWorkerFactory
 import androidx.work.*
+import coil.ImageLoader
+import coil.ImageLoaderFactory
 import com.mrostami.geckoincompose.workers.SyncCoinsWorker
 import dagger.hilt.android.HiltAndroidApp
 import org.jetbrains.annotations.NonNls
@@ -13,7 +15,7 @@ import javax.inject.Inject
 
 
 @HiltAndroidApp
-class GeckoinApplication : Application(), Configuration.Provider {
+class GeckoinApplication : Application(), Configuration.Provider, ImageLoaderFactory {
 
     companion object {
         const val DEFAULT_THEME_MODE: Int = AppCompatDelegate.MODE_NIGHT_FOLLOW_SYSTEM
@@ -23,6 +25,12 @@ class GeckoinApplication : Application(), Configuration.Provider {
         fun getInstance() : GeckoinApplication {
             return instance
         }
+    }
+
+    override fun newImageLoader(): ImageLoader {
+        return ImageLoader.Builder(this)
+            .crossfade(true)
+            .build()
     }
 
     // workerFactory initialized in app Manifest with a provider

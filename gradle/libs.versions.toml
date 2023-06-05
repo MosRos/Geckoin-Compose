@@ -82,6 +82,7 @@ okhttp = "4.11.0"
 gson = "2.10.1"
 ktor = "2.1.2"
 timber = "5.0.1"
+vico-charts = "1.6.6"
 
 [libraries]
 
@@ -194,6 +195,11 @@ okhttp3 = { module = "com.squareup.okhttp3:okhttp", version.ref = "okhttp" }
 gson = {module = "com.google.code.gson:gson", version.ref = "gson" }
 
 timber = { module = "com.jakewharton.timber:timber", version.ref = "timber"}
+
+vico-core = { module = "com.patrykandpatrick.vico:core", version.ref = "vico-charts" }
+vico-compose = { module = "com.patrykandpatrick.vico:compose", version.ref = "vico-charts"}
+vico-style-m2 = { module = "com.patrykandpatrick.vico:compose-m2", version.ref = "vico-charts"}
+vico-style-m3 = { module = "com.patrykandpatrick.vico:compose-m3", version.ref = "vico-charts" }
 
 ktor-core = { module = "io.ktor:ktor-client-core", version.ref = "ktor" }
 ktor-android = { module = "io.ktor:ktor-client-android", version.ref = "ktor" }

@@ -32,17 +32,17 @@ import timber.log.Timber
 
 @Composable
 fun MarketDominanceWidget(
-    viewModel: MarketDominanceViewModel = hiltViewModel(),
-    modifier: Modifier = Modifier
+    modifier: Modifier = Modifier,
+    viewModel: MarketDominanceViewModel = hiltViewModel()
 ) {
-    var uiState = viewModel.uiState.collectAsState()
+    val uiState = viewModel.uiState.collectAsState()
     StateView(
         uiModel = uiState.value,
         retryOnError = { viewModel.onNewEvent(MarketDominanceEvents.RefreshData) }
     ) {
         Timber.e("Collected values: ${uiState.value}")
         ConstraintLayout(
-            modifier = Modifier
+            modifier = modifier
                 .fillMaxWidth()
                 .padding(Dp(12f))
         ) {
@@ -50,7 +50,7 @@ fun MarketDominanceWidget(
             var heightInDp by remember {
                 mutableStateOf(DpSize.Zero)
             }
-            var density = LocalDensity.current
+            val density = LocalDensity.current
             Surface(
                 shape = GeckoinTheme.shapes.large,
                 tonalElevation = Dp(1f),
@@ -94,7 +94,7 @@ fun DominanceChart(
     boxHeight: Dp,
     modifier: Modifier = Modifier
 ) {
-    var caps: MutableMap<String, Double> = mutableMapOf()
+    val caps: MutableMap<String, Double> = mutableMapOf()
     globalMarketInfo.marketCapPercentages?.forEach {
         caps.put(it.coinId, it.cap)
     }
