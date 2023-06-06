@@ -9,6 +9,7 @@ import android.widget.Toast
 import androidx.annotation.ColorInt
 import androidx.annotation.ColorRes
 import androidx.appcompat.widget.AppCompatTextView
+import androidx.compose.ui.unit.Dp
 import androidx.core.content.ContextCompat
 import com.google.android.material.snackbar.Snackbar
 import com.mrostami.geckoincompose.R

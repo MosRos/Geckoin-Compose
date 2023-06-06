@@ -14,13 +14,15 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.Dp
+import androidx.navigation.NavController
 import com.mrostami.geckoincompose.ui.home.bitcoin_chart.BtcChartWidget
 import com.mrostami.geckoincompose.ui.home.tend_coins.TrendCoinsWidget
 import com.mrostami.geckoincompose.ui.theme.GeckoinTheme
 
 @Composable
 fun HomeScreen(
-    title: String
+    title: String,
+    navController: NavController
 ) {
     Column(
         modifier = Modifier

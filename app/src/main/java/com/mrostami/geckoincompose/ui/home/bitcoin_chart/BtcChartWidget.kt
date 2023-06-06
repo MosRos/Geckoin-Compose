@@ -44,8 +44,8 @@ import kotlin.math.roundToLong
 
 @Composable
 fun BtcChartWidget(
-    viewModel: BtcInfoViewModel = hiltViewModel(),
-    modifier: Modifier = Modifier
+    modifier: Modifier = Modifier,
+    viewModel: BtcInfoViewModel = hiltViewModel()
 ) {
     val uiState = viewModel.uiState.collectAsState()
 

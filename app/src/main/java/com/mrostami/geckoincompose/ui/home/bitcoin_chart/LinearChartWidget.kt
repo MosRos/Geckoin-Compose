@@ -5,11 +5,9 @@ import androidx.compose.runtime.remember
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import com.mrostami.geckoincompose.model.PriceEntry
-import com.patrykandpatrick.vico.compose.axis.vertical.startAxis
 import com.patrykandpatrick.vico.compose.chart.Chart
 import com.patrykandpatrick.vico.compose.chart.line.lineChart
 import com.patrykandpatrick.vico.compose.style.ProvideChartStyle
-import com.patrykandpatrick.vico.core.axis.Axis
 import com.patrykandpatrick.vico.core.entry.ChartEntry
 import com.patrykandpatrick.vico.core.entry.ChartEntryModel
 import com.patrykandpatrick.vico.core.entry.ChartEntryModelProducer
@@ -35,18 +33,18 @@ fun TenDaysLineChart(
     val maxPrice = if (prices.isEmpty()) 0 else prices.max()
     val entries = data.map { entryOf(x = it.timeStamp.toFloat(), y = it.price.toFloat()) }
     val chartEntryModelProducer = ChartEntryModelProducer(entries)
-    val model = ChartEntryModelProducer(entries)
+//    val model = ChartEntryModelProducer(entries)
 //    chartEntryModelProducer.setEntries(entries)
     chartEntryModelProducer.setEntries(entries)
 
-    val modle = ChartModel(
+    val model = ChartModel(
         entries = listOf(entries),
         minY = minPrice.toFloat(),
         maxY = maxPrice.toFloat(),
-        minX = data.map { it.timeStamp }.min().toFloat() ?: 0f,
-        maxX = data.map { it.timeStamp }.max().toFloat() ?: 0f,
-        stackedPositiveY = 0f,
-        stackedNegativeY = 0f,
+        minX = data.minOfOrNull { it.timeStamp }?.toFloat() ?: 0f,
+        maxX = data.maxOfOrNull { it.timeStamp }?.toFloat() ?: 0f,
+        stackedPositiveY = maxPrice.toFloat() + (maxPrice.toFloat()*0.15).toFloat(),
+        stackedNegativeY = minPrice.toFloat() - (maxPrice.toFloat()*0.15).toFloat(),
         xStep = if (data.size < 2) 1f else (data[1].timeStamp - data[0].timeStamp).toFloat(),
         id = 1
     )
@@ -57,7 +55,7 @@ fun TenDaysLineChart(
     ProvideChartStyle(rememberChartStyle(chartColors = chartColors)) {
         Chart(
             chart = lineChart(persistentMarkers = remember(marker) {mapOf(PERSISTENT_MARKER_X to marker)}),
-            model = modle,
+            model = model,
 //            startAxis = startAxis(sizeConstraint = Axis.SizeConstraint.Fraction(0.3f)),
 //            bottomAxis = bottomAxis(guideline = null),
             marker = marker,

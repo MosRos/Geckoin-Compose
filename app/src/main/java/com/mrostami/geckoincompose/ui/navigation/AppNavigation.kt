@@ -9,6 +9,7 @@ import androidx.navigation.NavHostController
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import com.mrostami.geckoincompose.ui.home.HomeScreen
+import com.mrostami.geckoincompose.ui.settings.SettingsScreen
 
 object MainDestinations {
     const val HOME_ROUTE = "home"
@@ -43,7 +44,10 @@ fun NavGraphBuilder.homepage(
     composable(
         route = MainScreen.Home.route
     ) {
-        HomeScreen(title = stringResource(id = MainScreen.Home.title))
+        HomeScreen(
+            title = stringResource(id = MainScreen.Home.title),
+            navController = navController
+        )
     }
 }
 
@@ -53,7 +57,10 @@ fun NavGraphBuilder.market(
     composable(
         route = MainScreen.Market.route
     ) {
-        HomeScreen(title = stringResource(id = MainScreen.Market.title))
+        HomeScreen(
+            title = stringResource(id = MainScreen.Market.title),
+            navController = navController
+        )
     }
 }
 
@@ -61,7 +68,10 @@ fun NavGraphBuilder.search(
     navController: NavController
 ) {
     composable(route = MainScreen.Search.route) {
-        HomeScreen(title = stringResource(id = MainScreen.Search.title))
+        HomeScreen(
+            title = stringResource(id = MainScreen.Search.title),
+            navController = navController
+        )
     }
 }
 
@@ -69,6 +79,6 @@ fun NavGraphBuilder.settings(
     navController: NavController
 ) {
     composable(route = MainScreen.Settings.route) {
-        HomeScreen(title = stringResource(id = MainScreen.Settings.title))
+        SettingsScreen(navController = navController)
     }
 }
