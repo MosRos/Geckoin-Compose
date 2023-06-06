@@ -8,6 +8,7 @@ import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.BoxWithConstraints
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
+import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
@@ -32,27 +33,28 @@ import com.mrostami.geckoincompose.ui.theme.GeckoinTheme
 @Composable
 fun SettingsScreen(
     navController: NavController,
-    settingsViewModel: SettingsViewModel = hiltViewModel(),
-    modifier: Modifier = Modifier
+    modifier: Modifier = Modifier,
+    settingsViewModel: SettingsViewModel = hiltViewModel()
 ) {
-    Column(
-        modifier = Modifier
-            .fillMaxSize()
-            .background(color = GeckoinTheme.colorScheme.background),
-        verticalArrangement = Arrangement.Center,
-        horizontalAlignment = Alignment.CenterHorizontally
-    ) {
-        BoxWithConstraints(
-            modifier = Modifier.fillMaxSize(),
+    BoxWithConstraints(
+            modifier = modifier.fillMaxSize(),
             contentAlignment = Alignment.TopCenter
         ) {
-            val imageSize = (maxWidth / 3)
+        val imageSize = (maxWidth / 3)
+        Column(
+            modifier = Modifier
+                .fillMaxSize()
+                .background(color = GeckoinTheme.colorScheme.background),
+            horizontalAlignment = Alignment.CenterHorizontally
+        ) {
+            Spacer(modifier = modifier.size(80.dp))
             Image(
                 painter = painterResource(id = R.drawable.bitcoin_logo),
                 contentDescription = "app icon",
                 modifier = Modifier
                     .size(imageSize)
                     .clip(RoundedCornerShape(size = 16.dp))
+                    .align(Alignment.CenterHorizontally)
                     .padding(top = 32.dp)
             )
             Text(
@@ -61,10 +63,12 @@ fun SettingsScreen(
                 color = GeckoinTheme.customColors.textPrimary,
                 modifier = Modifier
                     .padding(top = 16.dp)
-                    .align(Alignment.Center)
+                    .align(Alignment.CenterHorizontally)
             )
+            Spacer(modifier = modifier.size(110.dp))
             SettingsOptions(
-                modifier = Modifier.padding(top = 32.dp)
+                modifier = Modifier
+                    .padding(top = 132.dp)
             )
         }
     }
@@ -81,7 +85,7 @@ fun SettingsOptions(
         Divider(
             thickness = 1.dp,
             color = GeckoinTheme.customColors.dividerColor,
-            startIndent = 70.dp
+            startIndent = 50.dp
         )
         SettingOptionItem(title = "About Developer", iconResId = R.drawable.ic_code) {
             // TODO: open developer LinkedIn
@@ -90,7 +94,7 @@ fun SettingsOptions(
         Divider(
             thickness = 1.dp,
             color = GeckoinTheme.customColors.dividerColor,
-            startIndent = 70.dp
+            startIndent = 50.dp
         )
         SettingOptionItem(title = "About", iconResId = R.drawable.ic_info)
     }
@@ -104,7 +108,7 @@ fun SettingOptionItem(
     action: () -> Unit = {}
 ) {
     Row(
-        modifier = modifier
+        modifier = Modifier
             .fillMaxWidth()
             .height(55.dp)
             .clickable { action.invoke() },
