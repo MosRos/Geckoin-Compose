@@ -59,7 +59,7 @@ fun PieChart(
     data: Map<String, Double>,
     radiusOuter: Dp = Dp(140f),
     chartBarWidth: Dp = Dp(20f),
-    animDuration: Int = 1000,
+    animDuration: Int = 1500,
     modifier: Modifier = Modifier
 ) {
 

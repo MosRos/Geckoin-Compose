@@ -7,7 +7,6 @@ import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.size
-import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.runtime.Composable
@@ -16,7 +15,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.Dp
 import androidx.navigation.NavController
 import com.mrostami.geckoincompose.ui.home.bitcoin_chart.BtcChartWidget
-import com.mrostami.geckoincompose.ui.home.tend_coins.TrendCoinsWidget
+import com.mrostami.geckoincompose.ui.home.trend_coins.TrendCoinsWidget
 import com.mrostami.geckoincompose.ui.theme.GeckoinTheme
 
 @Composable
@@ -36,9 +35,9 @@ fun HomeScreen(
             .verticalScroll(rememberScrollState())
         ) {
             Spacer(modifier = Modifier.size(Dp(16f)))
-            MarketDominanceWidget()
-            Spacer(modifier = Modifier.size(Dp(8f)))
             BtcChartWidget()
+            Spacer(modifier = Modifier.size(Dp(8f)))
+            MarketDominanceWidget()
             Spacer(modifier = Modifier.size(Dp(8f)))
             TrendCoinsWidget()
             Spacer(modifier = Modifier.size(Dp(58f)))

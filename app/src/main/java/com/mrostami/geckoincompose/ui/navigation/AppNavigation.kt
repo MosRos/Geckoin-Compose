@@ -9,6 +9,7 @@ import androidx.navigation.NavHostController
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import com.mrostami.geckoincompose.ui.home.HomeScreen
+import com.mrostami.geckoincompose.ui.market_ranks.MarketRankScreen
 import com.mrostami.geckoincompose.ui.settings.SettingsScreen
 
 object MainDestinations {
@@ -57,8 +58,8 @@ fun NavGraphBuilder.market(
     composable(
         route = MainScreen.Market.route
     ) {
-        HomeScreen(
-            title = stringResource(id = MainScreen.Market.title),
+        MarketRankScreen(
+//            title = stringResource(id = MainScreen.Market.title),
             navController = navController
         )
     }

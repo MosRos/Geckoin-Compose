@@ -1,4 +1,4 @@
-package com.mrostami.geckoincompose.ui.home.tend_coins
+package com.mrostami.geckoincompose.ui.home.trend_coins
 
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope

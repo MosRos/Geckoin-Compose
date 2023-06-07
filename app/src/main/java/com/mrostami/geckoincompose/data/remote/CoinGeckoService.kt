@@ -7,6 +7,7 @@ import com.mrostami.geckoin.data.remote.responses.PriceChartResponse
 import com.mrostami.geckoin.data.remote.responses.TrendCoinsResponse
 import com.mrostami.geckoincompose.model.BitcoinSimplePriceInfoResponse
 import com.mrostami.geckoincompose.model.Coin
+import com.mrostami.geckoincompose.model.RankedCoin
 import io.ktor.client.statement.HttpResponse
 
 interface CoinGeckoService {
@@ -29,6 +30,10 @@ interface CoinGeckoService {
 
     suspend fun getBitcoinSimplePrice() : Either<CoinGeckoApiError, BitcoinSimplePriceInfoResponse>
     suspend fun getPriceChartInfo(coinId: String) : Either<CoinGeckoApiError, PriceChartResponse>
+
+     //Market Ranks
+//    @GET("coins/markets")
+    suspend fun getPagedMarketRanks(page: Int, perPage: Int) : Either<CoinGeckoApiError, List<RankedCoin>>
 
     // Price Info for a coin
 //    @GET("simple/price")

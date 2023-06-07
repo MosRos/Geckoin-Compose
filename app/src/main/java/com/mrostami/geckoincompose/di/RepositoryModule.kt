@@ -5,6 +5,9 @@ import com.mrostami.geckoincompose.data.remote.RemoteDataSource
 import com.mrostami.geckoincompose.data.repositories.AllCoinsRepositoryImpl
 import com.mrostami.geckoincompose.data.repositories.AppConfigRepositoryImpl
 import com.mrostami.geckoincompose.data.repositories.GlobalInfoRepositoryImpl
+import com.mrostami.geckoincompose.data.repositories.MarketRanksMediator
+import com.mrostami.geckoincompose.data.repositories.MarketRanksRepositoryImpl
+import com.mrostami.geckoincompose.data.repositories.NetworkMarketRanksPagingSource
 import com.mrostami.geckoincompose.domain.AllCoinsRepository
 import com.mrostami.geckoincompose.domain.AppConfigRepository
 import com.mrostami.geckoincompose.domain.CoinDetailsRepository
@@ -42,17 +45,19 @@ object RepositoryModule {
         )
     }
 
-//    @Singleton
-//    @Provides
-//    fun provideMarketRanksRepository(
-//        localDataSource: LocalDataSource,
-//        marketRanksMediator: MarketRanksMediator
-//    ) : MarketRanksRepository {
-//            return MarketRanksRepositoryImpl(
-//                localDataSource = localDataSource,
-//                marketRanksMediator = marketRanksMediator
-//            )
-//    }
+    @Singleton
+    @Provides
+    fun provideMarketRanksRepository(
+        localDataSource: LocalDataSource,
+        marketRanksMediator: MarketRanksMediator,
+        networkMarketRanksPagingSource: NetworkMarketRanksPagingSource
+    ) : MarketRanksRepository {
+            return MarketRanksRepositoryImpl(
+                localDataSource = localDataSource,
+                marketRanksMediator = marketRanksMediator,
+                networkMarketRanksPagingSource
+            )
+    }
 
     @Singleton
     @Provides

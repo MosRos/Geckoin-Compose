@@ -69,7 +69,7 @@ rome = "1.18.0"
 
 room = "2.5.1"
 paging = "3.1.1"
-compose_paging = "1.0.0-alpha19"
+compose_paging = "1.0.0-alpha20"
 datastore = "1.0.0"
 preferences_ktx = "1.2.0"
 androidx_security = "1.1.0-alpha06"

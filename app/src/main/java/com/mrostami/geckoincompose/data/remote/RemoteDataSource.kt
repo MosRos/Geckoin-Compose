@@ -1,12 +1,17 @@
 package com.mrostami.geckoincompose.data.remote
 
 import arrow.core.Either
+import com.google.gson.Gson
+import com.google.gson.JsonElement
+import com.google.gson.reflect.TypeToken
 import com.mrostami.geckoin.data.remote.responses.CoinGeckoApiError
 import com.mrostami.geckoin.data.remote.responses.CoinGeckoPingResponse
 import com.mrostami.geckoin.data.remote.responses.PriceChartResponse
 import com.mrostami.geckoin.data.remote.responses.TrendCoinsResponse
+import com.mrostami.geckoincompose.data.remote.responses.RankCoin
 import com.mrostami.geckoincompose.model.BitcoinSimplePriceInfoResponse
 import com.mrostami.geckoincompose.model.Coin
+import com.mrostami.geckoincompose.model.RankedCoin
 import io.ktor.client.HttpClient
 import io.ktor.client.call.body
 import io.ktor.client.request.get
@@ -17,18 +22,13 @@ import io.ktor.client.statement.bodyAsText
 import io.ktor.http.HttpMethod
 import io.ktor.http.HttpStatusCode
 import io.ktor.http.appendEncodedPathSegments
-import io.ktor.http.appendPathSegments
 import io.ktor.http.encodeURLPath
-import io.ktor.http.encodeURLPathPart
-import io.ktor.http.path
-import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.withContext
 import kotlinx.serialization.decodeFromString
 import kotlinx.serialization.json.Json
 import org.json.JSONArray
 import org.json.JSONObject
-import java.net.URLEncoder
-import java.nio.charset.StandardCharsets
+import timber.log.Timber
+import java.lang.reflect.Type
 import javax.inject.Inject
 import javax.inject.Named
 
@@ -51,6 +51,7 @@ class RemoteDataSource @Inject constructor(
                     val result = Json.decodeFromString<CoinGeckoPingResponse>(response.body())
                     Either.Right(result)
                 } catch (e: Exception) {
+                    Timber.e(e)
                     Either.Left(CoinGeckoApiError(error = e.message))
                 }
             },
@@ -70,6 +71,7 @@ class RemoteDataSource @Inject constructor(
                     val result = Json.decodeFromString<List<Coin>>(response.body())
                     Either.Right(result)
                 } catch (e: Exception) {
+                    Timber.e(e)
                     Either.Left(CoinGeckoApiError(error = e.message))
                 }
             },
@@ -88,6 +90,7 @@ class RemoteDataSource @Inject constructor(
                     }
                     Either.Right(response)
                 } catch (e: Exception) {
+                    Timber.e(e)
                     Either.Left(CoinGeckoApiError(error = e.message))
                 }
             },
@@ -107,6 +110,7 @@ class RemoteDataSource @Inject constructor(
                     val result = Json.decodeFromString<TrendCoinsResponse>(response.body())
                     Either.Right(result)
                 } catch (e: Exception) {
+                    Timber.e(e)
                     Either.Left(CoinGeckoApiError(error = e.message))
                 }
             },
@@ -133,6 +137,7 @@ class RemoteDataSource @Inject constructor(
                     val result = Json.decodeFromString<BitcoinSimplePriceInfoResponse>(response.body())
                     Either.Right(result)
                 } catch (e: Exception) {
+                    Timber.e(e)
                     Either.Left(CoinGeckoApiError(error = e.message))
                 }
             },
@@ -159,6 +164,33 @@ class RemoteDataSource @Inject constructor(
                     val result = deserializePriceChartResponse(httpResponse = response) // Json.decodeFromString<PriceChartResponse>(response.body())
                     Either.Right(result)
                 } catch (e : Exception) {
+                    Timber.e(e)
+                    Either.Left(CoinGeckoApiError(error = e.message))
+                }
+            },
+            errorHandler = {
+                Either.Left(CoinGeckoApiError(error = this.message))
+            }
+        )
+    }
+
+    override suspend fun getPagedMarketRanks(page: Int, perPage: Int): Either<CoinGeckoApiError, List<RankedCoin>> {
+        val endpoint = "coins/markets"
+        return httpClient.requestAndCatch(
+            request = {
+                try {
+                    val response = httpClient.request(BASE_URL + endpoint) {
+                        method = HttpMethod.Get
+                        parameter("vs_currency", "usd")
+                        parameter("page", page)
+                        parameter("per_page", perPage)
+                    }
+//                    val result = Json.decodeFromString<List<RankCoin>>(response.body())
+//                    val mapped = result.map { RankCoin.toRankedEntity(it) }
+                    val result: List<RankedCoin> = deserializeRankedCoins(response)
+                    Either.Right(result)
+                } catch (e: Exception) {
+                    Timber.e(e)
                     Either.Left(CoinGeckoApiError(error = e.message))
                 }
             },
@@ -194,6 +226,28 @@ private suspend fun deserializePriceChartResponse(httpResponse: HttpResponse) : 
         }
         return PriceChartResponse(prices = priceEntries)
     } catch (e: Exception) {
+        Timber.e(e)
         return priceChartResponse
+    }
+}
+
+private suspend fun deserializeRankedCoins(httpResponse: HttpResponse) : List<RankedCoin> {
+    val gson = Gson().newBuilder().create()
+    val coins: MutableList<RankedCoin> = mutableListOf()
+    if (httpResponse.status != HttpStatusCode.OK) return emptyList()
+    try {
+        val responseData: String = httpResponse.bodyAsText()
+        val coinsJSONArray = JSONArray(responseData)
+        if (coinsJSONArray.length() == 0) return emptyList()
+        Timber.e("Deserializing", coinsJSONArray.toString())
+        val type = TypeToken.getParameterized(List::class.java, RankedCoin::class.java).type
+        for (i in 0 until coinsJSONArray.length()) {
+        }
+        val coinList = gson.fromJson<List<RankedCoin>>(responseData, type)
+        coins.addAll(coinList)
+        return coins.toList()
+    } catch (e:Exception) {
+        Timber.e(e.message)
+        return emptyList() // listOf(RankedCoin(id = "bitcoin", name = "bitcoin"), RankedCoin(id = "ethereum", name = "ethereum"), RankedCoin(id = "shitcoin", name = "shitcoin"))
     }
 }
