@@ -10,6 +10,7 @@ import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import com.mrostami.geckoincompose.ui.home.HomeScreen
 import com.mrostami.geckoincompose.ui.market_ranks.MarketRankScreen
+import com.mrostami.geckoincompose.ui.search.SearchScreen
 import com.mrostami.geckoincompose.ui.settings.SettingsScreen
 
 object MainDestinations {
@@ -69,7 +70,7 @@ fun NavGraphBuilder.search(
     navController: NavController
 ) {
     composable(route = MainScreen.Search.route) {
-        HomeScreen(
+        SearchScreen(
             title = stringResource(id = MainScreen.Search.title),
             navController = navController
         )

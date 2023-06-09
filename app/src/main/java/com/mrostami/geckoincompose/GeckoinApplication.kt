@@ -22,7 +22,8 @@ class GeckoinApplication : Application(), Configuration.Provider, ImageLoaderFac
 
         private lateinit var instance: GeckoinApplication
             private set
-        fun getInstance() : GeckoinApplication {
+
+        fun getInstance(): GeckoinApplication {
             return instance
         }
     }
@@ -34,31 +35,31 @@ class GeckoinApplication : Application(), Configuration.Provider, ImageLoaderFac
     }
 
     // workerFactory initialized in app Manifest with a provider
-    @Inject lateinit var workerFactory: HiltWorkerFactory
+    @Inject
+    lateinit var workerFactory: HiltWorkerFactory
 
     override fun getWorkManagerConfiguration(): Configuration {
-//        return if (BuildConfig.DEBUG) {
-//            Configuration.Builder()
-//                .setWorkerFactory(workerFactory)
-//                .setMinimumLoggingLevel(Log.DEBUG)
-//                .build()
-//        } else {
-//        }
-        return Configuration.Builder()
-            .setMinimumLoggingLevel(Log.ERROR)
-            .setWorkerFactory(workerFactory)
-            .build()
+        return if (BuildConfig.DEBUG) {
+            Configuration.Builder()
+                .setWorkerFactory(workerFactory)
+                .setMinimumLoggingLevel(Log.DEBUG)
+                .build()
+        } else {
+            Configuration.Builder()
+                .setMinimumLoggingLevel(Log.ERROR)
+                .setWorkerFactory(workerFactory)
+                .build()
+        }
     }
 
     override fun onCreate() {
         super.onCreate()
         instance = this
-
         initTimber()
 //        initSyncWorker(this)
     }
 
-    fun getAppContext() : Application {
+    fun getAppContext(): Application {
         return instance
     }
 
@@ -75,11 +76,11 @@ class GeckoinApplication : Application(), Configuration.Provider, ImageLoaderFac
     }
 
     private fun initTimber() {
-        Timber.plant(Timber.DebugTree())
-//        if (BuildConfig.DEBUG) {
-//        } else {
-//            Timber.plant(CrashReportingTree())
-//        }
+        if (BuildConfig.DEBUG) {
+            Timber.plant(Timber.DebugTree())
+        } else {
+            Timber.plant(CrashReportingTree())
+        }
     }
 
     /** A tree which logs important information for crash reporting.  */

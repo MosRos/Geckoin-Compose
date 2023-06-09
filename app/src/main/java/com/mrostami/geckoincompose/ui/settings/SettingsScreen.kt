@@ -1,9 +1,11 @@
 package com.mrostami.geckoincompose.ui.settings
 
+import android.net.Uri
 import androidx.annotation.DrawableRes
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
+import androidx.compose.foundation.isSystemInDarkTheme
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.BoxWithConstraints
 import androidx.compose.foundation.layout.Column
@@ -19,14 +21,18 @@ import androidx.compose.material.Divider
 import androidx.compose.material.Icon
 import androidx.compose.material.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.CompositionLocalContext
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
+import androidx.compose.ui.layout.ContentScale
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.navigation.NavController
+import coil.compose.AsyncImage
 import com.mrostami.geckoincompose.R
 import com.mrostami.geckoincompose.ui.theme.GeckoinTheme
 
@@ -37,9 +43,9 @@ fun SettingsScreen(
     settingsViewModel: SettingsViewModel = hiltViewModel()
 ) {
     BoxWithConstraints(
-            modifier = modifier.fillMaxSize(),
-            contentAlignment = Alignment.TopCenter
-        ) {
+        modifier = modifier.fillMaxSize(),
+        contentAlignment = Alignment.TopCenter
+    ) {
         val imageSize = (maxWidth / 3)
         Column(
             modifier = Modifier
@@ -49,13 +55,14 @@ fun SettingsScreen(
         ) {
             Spacer(modifier = modifier.size(80.dp))
             Image(
-                painter = painterResource(id = R.drawable.bitcoin_logo),
+                painter = painterResource(id = R.mipmap.ic_launcher_foreground), // painterResource(id = R.drawable.bitcoin_logo),
                 contentDescription = "app icon",
+                contentScale = ContentScale.Fit,
                 modifier = Modifier
-                    .size(imageSize)
+                    .size(100.dp)
                     .clip(RoundedCornerShape(size = 16.dp))
                     .align(Alignment.CenterHorizontally)
-                    .padding(top = 32.dp)
+
             )
             Text(
                 text = stringResource(id = R.string.app_name),
@@ -79,7 +86,10 @@ fun SettingsOptions(
     modifier: Modifier = Modifier
 ) {
     Column {
-        SettingOptionItem(title = "Theme Mode", iconResId = R.drawable.ic_sun) {
+        SettingOptionItem(
+            title = "Theme Mode",
+            iconResId = if (isSystemInDarkTheme()) R.drawable.ic_moon else R.drawable.ic_sun
+        ) {
             // TODO: open theme settings dialog
         }
         Divider(
@@ -111,8 +121,8 @@ fun SettingOptionItem(
         modifier = Modifier
             .fillMaxWidth()
             .height(55.dp)
-            .clickable { action.invoke() },
-//            .padding(horizontal = 16.dp),
+            .clickable { action.invoke() }
+            .padding(horizontal = 16.dp),
     ) {
         Icon(
             painter = painterResource(id = iconResId),
@@ -120,7 +130,6 @@ fun SettingOptionItem(
             tint = GeckoinTheme.customColors.textPrimary,
             modifier = Modifier
                 .size(24.dp)
-                .padding(start = 16.dp)
                 .align(Alignment.CenterVertically)
         )
         Text(
