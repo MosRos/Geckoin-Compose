@@ -59,7 +59,7 @@ fun PieChart(
     data: Map<String, Double>,
     radiusOuter: Dp = Dp(140f),
     chartBarWidth: Dp = Dp(20f),
-    animDuration: Int = 1500,
+    animDuration: Int = 1000,
     modifier: Modifier = Modifier
 ) {
 
@@ -123,7 +123,7 @@ fun PieChart(
     // if you want to stabilize the Pie Chart you can use value -90f
     // 90f is used to complete 1/4 of the rotation
     val animateRotation by animateFloatAsState(
-        targetValue = if (animationPlayed) 90f * 11f else 0f,
+        targetValue = if (animationPlayed) 90f * 3f else 0f,
         animationSpec = tween(
             durationMillis = animDuration,
             delayMillis = 0,
