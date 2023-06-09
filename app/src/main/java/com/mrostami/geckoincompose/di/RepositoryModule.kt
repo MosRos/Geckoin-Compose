@@ -49,11 +49,13 @@ object RepositoryModule {
     @Provides
     fun provideMarketRanksRepository(
         localDataSource: LocalDataSource,
+        remoteDataSource: RemoteDataSource,
         marketRanksMediator: MarketRanksMediator,
         networkMarketRanksPagingSource: NetworkMarketRanksPagingSource
     ) : MarketRanksRepository {
             return MarketRanksRepositoryImpl(
                 localDataSource = localDataSource,
+                remoteDataSource = remoteDataSource,
                 marketRanksMediator = marketRanksMediator,
                 networkMarketRanksPagingSource
             )

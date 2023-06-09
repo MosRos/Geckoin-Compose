@@ -9,14 +9,19 @@ import androidx.compose.foundation.lazy.rememberLazyListState
 import androidx.compose.material.CircularProgressIndicator
 import androidx.compose.material.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.collectAsState
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.navigation.NavController
 import androidx.paging.LoadState
+import androidx.paging.PagingData
+import androidx.paging.compose.LazyPagingItems
 import androidx.paging.compose.collectAsLazyPagingItems
 import androidx.paging.compose.items
+import com.mrostami.geckoincompose.domain.base.Result
+import com.mrostami.geckoincompose.model.RankedCoin
 import com.mrostami.geckoincompose.ui.components.RankedCoinItemView
 import com.mrostami.geckoincompose.ui.theme.GeckoinTheme
 import timber.log.Timber
@@ -27,8 +32,8 @@ fun MarketRankScreen(
     modifier: Modifier = Modifier,
     viewModel: CoinRankViewModel = hiltViewModel()
 ) {
-    val pagedCoins = viewModel.rankedCoinsStateFlow().collectAsLazyPagingItems()
-    Timber.e(pagedCoins.toString())
+    val pagedCoins: LazyPagingItems<RankedCoin> = viewModel.rankedCoinsStateFlow().collectAsLazyPagingItems()
+
     val listState = rememberLazyListState()
     LazyColumn(
         state = listState

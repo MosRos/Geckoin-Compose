@@ -1,6 +1,6 @@
 package com.mrostami.geckoincompose.ui.base
 
-interface BaseUiModel {
+interface BaseUiState {
     enum class State {
         LOADING,
         ERROR,

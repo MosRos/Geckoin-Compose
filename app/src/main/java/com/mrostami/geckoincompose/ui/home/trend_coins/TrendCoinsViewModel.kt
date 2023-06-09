@@ -5,7 +5,7 @@ import androidx.lifecycle.viewModelScope
 import com.mrostami.geckoincompose.domain.base.Result
 import com.mrostami.geckoincompose.domain.usecases.TrendCoinsUseCase
 import com.mrostami.geckoincompose.model.TrendCoin
-import com.mrostami.geckoincompose.ui.base.BaseUiModel
+import com.mrostami.geckoincompose.ui.base.BaseUiState
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.MutableStateFlow
@@ -20,8 +20,8 @@ class TrendCoinsViewModel @Inject constructor(
     private val trendCoinsUseCase: TrendCoinsUseCase
 ) : ViewModel() {
 
-    private val _uiState: MutableStateFlow<TrendCoinsUiModel> = MutableStateFlow(TrendCoinsUiModel.defaultInitiState)
-    val uiState: StateFlow<TrendCoinsUiModel> = _uiState
+    private val _uiState: MutableStateFlow<TrendCoinsUiState> = MutableStateFlow(TrendCoinsUiState.defaultInitiState)
+    val uiState: StateFlow<TrendCoinsUiState> = _uiState
 
     init {
         getTrendCoins()
@@ -33,8 +33,8 @@ class TrendCoinsViewModel @Inject constructor(
                 when(result) {
                     is Result.Success -> {
                         _uiState.emit(
-                            TrendCoinsUiModel(
-                                state = BaseUiModel.State.SUCCESS,
+                            TrendCoinsUiState(
+                                state = BaseUiState.State.SUCCESS,
                                 errorMessage = null,
                                 data = result.data
                             )
@@ -42,15 +42,15 @@ class TrendCoinsViewModel @Inject constructor(
                     }
                     is Result.Error -> {
                         _uiState.emit(
-                            TrendCoinsUiModel(
-                                state = BaseUiModel.State.ERROR,
+                            TrendCoinsUiState(
+                                state = BaseUiState.State.ERROR,
                                 errorMessage = result.message ?: "Error",
                                 data = listOf()
                             )
                         )
                     }
                     is Result.Loading -> {
-                        _uiState.emit(TrendCoinsUiModel.defaultInitiState)
+                        _uiState.emit(TrendCoinsUiState.defaultInitiState)
                     }
                 }
             }
@@ -61,7 +61,7 @@ class TrendCoinsViewModel @Inject constructor(
         reduce(event = event, oldState = _uiState.value)
     }
 
-    private fun reduce(event: TrendCoinsEvents, oldState: TrendCoinsUiModel) {
+    private fun reduce(event: TrendCoinsEvents, oldState: TrendCoinsUiState) {
         when(event) {
             is TrendCoinsEvents.RefreshData -> getTrendCoins()
         }
@@ -78,13 +78,13 @@ sealed interface TrendCoinsEvents {
 }
 
 @Immutable
-data class TrendCoinsUiModel(
-    override val state: BaseUiModel.State = BaseUiModel.State.LOADING,
+data class TrendCoinsUiState(
+    override val state: BaseUiState.State = BaseUiState.State.LOADING,
     override val errorMessage: String? = null,
     override val data: List<TrendCoin> = listOf()
-    ) : BaseUiModel {
+    ) : BaseUiState {
         companion object {
-            val defaultInitiState = TrendCoinsUiModel()
+            val defaultInitiState = TrendCoinsUiState()
         }
     }
 

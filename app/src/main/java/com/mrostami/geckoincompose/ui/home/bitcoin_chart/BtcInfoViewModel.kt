@@ -9,15 +9,20 @@ import com.mrostami.geckoincompose.domain.usecases.BitcoinChartInfoUseCase
 import com.mrostami.geckoincompose.domain.usecases.BitcoinSimplePriceUseCase
 import com.mrostami.geckoincompose.model.BitcoinPriceInfo
 import com.mrostami.geckoincompose.model.PriceEntry
-import com.mrostami.geckoincompose.ui.base.BaseUiModel
+import com.mrostami.geckoincompose.ui.base.BaseUiEffect
+import com.mrostami.geckoincompose.ui.base.BaseUiEvent
+import com.mrostami.geckoincompose.ui.base.BaseUiState
+import com.mrostami.geckoincompose.ui.base.Reducer
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.async
 import kotlinx.coroutines.channels.Channel
+import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.collectLatest
 import kotlinx.coroutines.flow.combine
+import kotlinx.coroutines.flow.receiveAsFlow
 import kotlinx.coroutines.launch
 import javax.annotation.concurrent.Immutable
 import javax.inject.Inject
@@ -28,65 +33,71 @@ class BtcInfoViewModel @Inject constructor(
     private val btcPriceUseCase: BitcoinSimplePriceUseCase
 ) : ViewModel() {
 
-    private var _uiState: MutableStateFlow<BtcInfoUiModel> = MutableStateFlow(BtcInfoUiModel.defaultInitState)
-    val uiState: StateFlow<BtcInfoUiModel> = _uiState
+    private val reducer = BtcInfoReducer(initState = BtcInfoUiState.defaultInitState)
 
-    var uiEffects: Channel<BtcInfoEffects> = Channel()
-        private set
+    val uiState: StateFlow<BtcInfoUiState>
+        get() = reducer.state
+
+    val uiEffects: Flow<BtcInfoEffects>
+        get() = reducer.effect.receiveAsFlow()
 
     init {
-        getBtcMarketInfo()
-    }
-
-    private fun getBtcMarketInfo() {
-        viewModelScope.launch(Dispatchers.IO) {
-            val priceJob = async {
-                btcPriceUseCase.invoke(forceRefresh = false)
-            }.await()
-            val chartJob = async {
-                btcChartInfoUseCase.invoke(forceRefresh = false)
-            }.await()
-
-            priceJob.combine(chartJob) { priceInfo, chartInfo ->
-                if (priceInfo.succeeded && chartInfo.succeeded) {
-                    BtcInfoUiModel(
-                        state = BaseUiModel.State.SUCCESS,
-                        errorMessage = null,
-                        data = BtcUiInfo(
-                            btcPriceInfo = priceInfo.data,
-                            btcChartInfo = chartInfo.data
-                        )
-                    )
-                } else if (priceInfo is Result.Error || chartInfo is Result.Error) {
-                    val errorMessage = (priceInfo as? Result.Error)?.message
-                        ?: (chartInfo as? Result.Error)?.message ?: "an error occured"
-                    BtcInfoUiModel(
-                        state = BaseUiModel.State.ERROR,
-                        errorMessage = errorMessage,
-                        data = BtcUiInfo(
-                            btcPriceInfo = BitcoinPriceInfo(),
-                            btcChartInfo = listOf()
-                        )
-                    )
-                } else {
-                    BtcInfoUiModel.defaultInitState
-                }
-
-            }.collectLatest { result ->
-                _uiState.emit(result)
-            }
-
-        }
+        reducer.sendEvent(event = BtcInfoEvents.RefreshData)
     }
 
     fun onNewEvent(events: BtcInfoEvents) {
-        reduce(events = events, oldState = _uiState.value)
+        reducer.sendEvent(events)
     }
 
-    private fun reduce(events: BtcInfoEvents, oldState: BtcInfoUiModel) {
-        when(events) {
-            is BtcInfoEvents.RefreshData -> {
-                getBtcMarketInfo()
+    private inner class BtcInfoReducer(initState: BtcInfoUiState) :
+        Reducer<BtcInfoUiState, BtcInfoEvents, BtcInfoEffects>(initialState = initState) {
+
+        override fun reduce(event: BtcInfoEvents, oldState: BtcInfoUiState) {
+            when(event) {
+                is BtcInfoEvents.RefreshData -> {
+                    getBtcMarketInfo()
+                }
+            }
+        }
+
+        private fun getBtcMarketInfo() {
+            viewModelScope.launch(Dispatchers.IO) {
+                val priceJob = async {
+                    btcPriceUseCase.invoke(forceRefresh = false)
+                }.await()
+                val chartJob = async {
+                    btcChartInfoUseCase.invoke(forceRefresh = false)
+                }.await()
+
+                priceJob.combine(chartJob) { priceInfo, chartInfo ->
+                    if (priceInfo.succeeded && chartInfo.succeeded) {
+                        BtcInfoUiState(
+                            state = BaseUiState.State.SUCCESS,
+                            errorMessage = null,
+                            data = BtcUiInfo(
+                                btcPriceInfo = priceInfo.data,
+                                btcChartInfo = chartInfo.data
+                            )
+                        )
+                    } else if (priceInfo is Result.Error || chartInfo is Result.Error) {
+                        val errorMessage = (priceInfo as? Result.Error)?.message
+                            ?: (chartInfo as? Result.Error)?.message ?: "an error occured"
+                        BtcInfoUiState(
+                            state = BaseUiState.State.ERROR,
+                            errorMessage = errorMessage,
+                            data = BtcUiInfo(
+                                btcPriceInfo = BitcoinPriceInfo(),
+                                btcChartInfo = listOf()
+                            )
+                        )
+                    } else {
+                        BtcInfoUiState.defaultInitState
+                    }
+
+                }.collectLatest { result ->
+                    setState(result)
+                }
+
             }
         }
     }
@@ -97,14 +108,14 @@ data class BtcUiInfo(
     val btcChartInfo: List<PriceEntry>
 )
 @Immutable
-data class BtcInfoUiModel(
-    override val state: BaseUiModel.State,
+data class BtcInfoUiState(
+    override val state: BaseUiState.State,
     override val errorMessage: String?,
     override val data: BtcUiInfo
-) : BaseUiModel {
+) : BaseUiState {
     companion object {
-        val defaultInitState = BtcInfoUiModel(
-            state = BaseUiModel.State.LOADING,
+        val defaultInitState = BtcInfoUiState(
+            state = BaseUiState.State.LOADING,
             errorMessage = null,
             data = BtcUiInfo(
                 btcPriceInfo = BitcoinPriceInfo(),
@@ -114,10 +125,10 @@ data class BtcInfoUiModel(
     }
 }
 
-sealed interface BtcInfoEffects {
+sealed interface BtcInfoEffects : BaseUiEffect {
     object NoEffect : BtcInfoEffects
 }
 
-sealed interface BtcInfoEvents {
+sealed interface BtcInfoEvents : BaseUiEvent {
     object RefreshData : BtcInfoEvents
 }

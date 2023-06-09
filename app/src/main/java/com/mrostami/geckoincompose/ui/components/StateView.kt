@@ -17,21 +17,21 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
-import com.mrostami.geckoincompose.ui.base.BaseUiModel
+import com.mrostami.geckoincompose.ui.base.BaseUiState
 import com.mrostami.geckoincompose.ui.theme.GeckoinTheme
 
 @Composable
 fun StateView(
-    uiModel: BaseUiModel,
-    retryOnError: () -> Unit = {},
+    uiModel: BaseUiState,
     modifier: Modifier = Modifier,
+    retryOnError: () -> Unit = {},
     content: @Composable () -> Unit
 ) {
     Crossfade(targetState = uiModel, modifier = modifier, label = "") {
         when (it.state) {
-            BaseUiModel.State.LOADING -> CircularLoadingIndicator()
-            BaseUiModel.State.ERROR -> ErrorView(message = it.errorMessage, retryAction = retryOnError)
-            BaseUiModel.State.SUCCESS -> content()
+            BaseUiState.State.LOADING -> CircularLoadingIndicator()
+            BaseUiState.State.ERROR -> ErrorView(message = it.errorMessage, retryAction = retryOnError)
+            BaseUiState.State.SUCCESS -> content()
         }
     }
 }

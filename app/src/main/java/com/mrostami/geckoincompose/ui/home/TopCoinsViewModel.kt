@@ -6,7 +6,7 @@ import androidx.lifecycle.viewModelScope
 import com.mrostami.geckoincompose.domain.base.Result
 import com.mrostami.geckoincompose.domain.usecases.GlobalMarketInfoUseCase
 import com.mrostami.geckoincompose.model.GlobalMarketInfo
-import com.mrostami.geckoincompose.ui.base.BaseUiModel
+import com.mrostami.geckoincompose.ui.base.BaseUiState
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.channels.Channel
@@ -22,8 +22,8 @@ class MarketDominanceViewModel @Inject constructor(
     private val globalMarketInfoUseCase: GlobalMarketInfoUseCase
 ) : ViewModel() {
 
-    private var _uiState: MutableStateFlow<DominanceUiModel> = MutableStateFlow(DominanceUiModel.defaultInitState)
-    val uiState: StateFlow<DominanceUiModel> = _uiState
+    private var _uiState: MutableStateFlow<DominanceUiState> = MutableStateFlow(DominanceUiState.defaultInitState)
+    val uiState: StateFlow<DominanceUiState> = _uiState
 
     var uiEffects: Channel<MarketDominanceEffects> = Channel()
         private set
@@ -38,9 +38,9 @@ class MarketDominanceViewModel @Inject constructor(
                     is Result.Success ->  {
                         Timber.e(result.data.toString())
                         _uiState.emit(
-                            DominanceUiModel(
+                            DominanceUiState(
                             data = result.data,
-                            state = BaseUiModel.State.SUCCESS,
+                            state = BaseUiState.State.SUCCESS,
                             errorMessage = null
                             )
                         )
@@ -48,8 +48,8 @@ class MarketDominanceViewModel @Inject constructor(
                     is Result.Error -> {
                         Timber.e(result.exception.toString())
                         _uiState.emit(
-                            DominanceUiModel(
-                            state = BaseUiModel.State.ERROR,
+                            DominanceUiState(
+                            state = BaseUiState.State.ERROR,
                             errorMessage = (result as Result.Error).exception.message ?: "error"
                             )
                         )
@@ -57,8 +57,8 @@ class MarketDominanceViewModel @Inject constructor(
                     is Result.Loading -> {
                         Timber.e(result.toString())
                         _uiState.emit(
-                            DominanceUiModel(
-                                state = BaseUiModel.State.LOADING,
+                            DominanceUiState(
+                                state = BaseUiState.State.LOADING,
                                 errorMessage = null
                             )
                         )
@@ -71,7 +71,7 @@ class MarketDominanceViewModel @Inject constructor(
     fun onNewEvent(event: MarketDominanceEvents) {
         reduce(event = event, oldState = uiState.value)
     }
-    private fun reduce(event: MarketDominanceEvents, oldState: BaseUiModel)  {
+    private fun reduce(event: MarketDominanceEvents, oldState: BaseUiState)  {
         return when(event) {
             is MarketDominanceEvents.RefreshData -> {
                 getMarketDominanceInfo()
@@ -89,14 +89,14 @@ sealed interface MarketDominanceEffects {
     object NoEffect : MarketDominanceEffects
 }
 
-@Immutable data class DominanceUiModel(
-    override val state: BaseUiModel.State,
+@Immutable data class DominanceUiState(
+    override val state: BaseUiState.State,
     override val errorMessage: String?,
     override val data: GlobalMarketInfo = GlobalMarketInfo()
-) : BaseUiModel {
+) : BaseUiState {
     companion object {
-        val defaultInitState = DominanceUiModel(
-            state = BaseUiModel.State.LOADING,
+        val defaultInitState = DominanceUiState(
+            state = BaseUiState.State.LOADING,
             errorMessage = null
         )
     }
