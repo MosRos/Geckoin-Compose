@@ -10,10 +10,8 @@ import com.mrostami.geckoincompose.data.repositories.MarketRanksRepositoryImpl
 import com.mrostami.geckoincompose.data.repositories.NetworkMarketRanksPagingSource
 import com.mrostami.geckoincompose.domain.AllCoinsRepository
 import com.mrostami.geckoincompose.domain.AppConfigRepository
-import com.mrostami.geckoincompose.domain.CoinDetailsRepository
 import com.mrostami.geckoincompose.domain.GlobalInfoRepository
 import com.mrostami.geckoincompose.domain.MarketRanksRepository
-import com.mrostami.geckoincompose.domain.PriceHistoryRepository
 import dagger.Module
 import dagger.Provides
 import dagger.hilt.InstallIn

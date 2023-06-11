@@ -23,6 +23,7 @@ import androidx.compose.ui.unit.DpSize
 import androidx.constraintlayout.compose.ConstraintLayout
 import androidx.constraintlayout.compose.Dimension
 import androidx.hilt.navigation.compose.hiltViewModel
+import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import com.mrostami.geckoincompose.model.GlobalMarketInfo
 import com.mrostami.geckoincompose.ui.components.PieChart
 import com.mrostami.geckoincompose.ui.components.StateView
@@ -35,7 +36,7 @@ fun MarketDominanceWidget(
     modifier: Modifier = Modifier,
     viewModel: MarketDominanceViewModel = hiltViewModel()
 ) {
-    val uiState = viewModel.uiState.collectAsState()
+    val uiState = viewModel.uiState.collectAsStateWithLifecycle()
     StateView(
         uiModel = uiState.value,
         retryOnError = { viewModel.onNewEvent(MarketDominanceEvents.RefreshData) }

@@ -4,6 +4,7 @@ import arrow.core.Either
 import com.mrostami.geckoin.data.remote.responses.CoinGeckoApiError
 import io.ktor.client.HttpClient
 import io.ktor.client.plugins.ResponseException
+import io.ktor.client.statement.bodyAsText
 
 suspend fun <R> HttpClient.requestAndCatch(
     request: suspend HttpClient.() -> Either<CoinGeckoApiError, R>,
@@ -12,19 +13,7 @@ suspend fun <R> HttpClient.requestAndCatch(
     request()
 }.getOrElse {
     when (it) {
-        is ResponseException -> Either.Left(CoinGeckoApiError()) //it.errorHandler()
+        is ResponseException -> Either.Left(CoinGeckoApiError(error = it.response.bodyAsText())) //it.errorHandler()
         else -> Either.Left(CoinGeckoApiError())
     }
 }
-
-// Example call
-//client.requestAndCatch(
-//{ get<String>("/") },
-//{
-//    when (response.status) {
-//        HttpStatusCode.BadRequest -> {} // Throw errors or transform to T
-//        HttpStatusCode.Conflict -> {}
-//        else -> throw this
-//    }
-//}
-//)

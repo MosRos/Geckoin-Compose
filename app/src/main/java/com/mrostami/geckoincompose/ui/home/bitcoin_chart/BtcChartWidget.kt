@@ -1,7 +1,6 @@
 package com.mrostami.geckoincompose.ui.home.bitcoin_chart
 
 import androidx.compose.foundation.BorderStroke
-import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
@@ -13,7 +12,6 @@ import androidx.compose.material3.Icon
 import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
@@ -32,10 +30,12 @@ import androidx.compose.ui.unit.DpSize
 import androidx.constraintlayout.compose.ConstraintLayout
 import androidx.constraintlayout.compose.Dimension
 import androidx.hilt.navigation.compose.hiltViewModel
+import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import coil.compose.AsyncImage
 import com.mrostami.geckoincompose.R
 import com.mrostami.geckoincompose.model.BitcoinPriceInfo
 import com.mrostami.geckoincompose.ui.components.StateView
+import com.mrostami.geckoincompose.ui.components.TenDaysLineChart
 import com.mrostami.geckoincompose.ui.theme.GeckoinTheme
 import com.mrostami.geckoincompose.utils.decimalFormat
 import com.mrostami.geckoincompose.utils.round
@@ -47,7 +47,7 @@ fun BtcChartWidget(
     modifier: Modifier = Modifier,
     viewModel: BtcInfoViewModel = hiltViewModel()
 ) {
-    val uiState = viewModel.uiState.collectAsState()
+    val uiState = viewModel.uiState.collectAsStateWithLifecycle()
 
     StateView(
         uiModel = uiState.value,

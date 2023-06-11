@@ -1,4 +1,4 @@
-package com.mrostami.geckoincompose.ui.home.bitcoin_chart
+package com.mrostami.geckoincompose.ui.components
 
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.remember

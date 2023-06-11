@@ -15,6 +15,7 @@ import io.ktor.client.plugins.HttpTimeout
 import io.ktor.client.plugins.contentnegotiation.ContentNegotiation
 import io.ktor.client.plugins.defaultRequest
 import io.ktor.client.plugins.logging.LogLevel
+import io.ktor.client.plugins.logging.Logger
 import io.ktor.client.plugins.logging.Logging
 import io.ktor.http.URLBuilder
 import io.ktor.http.encodedPath
@@ -62,8 +63,12 @@ object NetworkModule {
 
     @Singleton
     @Provides
+    fun provideKtorLogger() : Logger = KtorHttpLogger()
+
+    @Singleton
+    @Provides
     @Named("ktor-android")
-    fun provideKtorClient(): HttpClient {
+    fun provideKtorClient(ktorLogger: Logger): HttpClient {
         return HttpClient(Android) {
             defaultRequest {
                 url.takeFrom(URLBuilder().takeFrom(BASE_URL).apply {
@@ -79,7 +84,7 @@ object NetworkModule {
                 socketTimeoutMillis = 15_000
             }
             install(Logging) {
-                logger = KtorHttpLogger()
+                logger = ktorLogger
                 level = LogLevel.BODY
             }
 //            HttpResponseValidator {  }

@@ -11,6 +11,15 @@ import com.mrostami.geckoincompose.model.RankedCoin
 import io.ktor.client.statement.HttpResponse
 
 interface CoinGeckoService {
+    companion object {
+        const val PING_ENDPOINT = "ping"
+        const val ALL_COINS_ENDPOINT = "coins/list"
+        const val GLOBAL_INFO_ENDPOINT = "global"
+        const val TRENDING_COINS_ENDPOINT = "search/trending"
+        const val MARKET_RANKS_ENDPOINT = "coins/markets"
+        const val SIMPLE_PRICE_ENDPOINT = "simple/price"
+        const val PRICE_CHART_ENDPOINT = "coins/{id}/market_chart"
+    }
 
     // Ping for api connection checking
 //    @GET("ping")
