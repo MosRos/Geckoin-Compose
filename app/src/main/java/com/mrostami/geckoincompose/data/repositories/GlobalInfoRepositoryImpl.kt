@@ -15,10 +15,8 @@ import com.mrostami.geckoincompose.model.MarketCapPercentageItem
 import com.mrostami.geckoincompose.model.PriceEntry
 import com.mrostami.geckoincompose.model.TrendCoin
 import com.mrostami.geckoincompose.utils.round
-import io.ktor.client.call.body
 import io.ktor.client.statement.HttpResponse
 import io.ktor.client.statement.bodyAsText
-import io.ktor.client.statement.readText
 import io.ktor.http.HttpStatusCode
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.Flow

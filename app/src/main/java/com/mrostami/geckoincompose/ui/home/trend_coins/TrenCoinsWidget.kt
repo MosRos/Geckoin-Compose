@@ -17,6 +17,7 @@ import androidx.compose.ui.draw.clip
 import androidx.compose.ui.unit.Dp
 import androidx.constraintlayout.compose.ConstraintLayout
 import androidx.hilt.navigation.compose.hiltViewModel
+import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import coil.compose.AsyncImage
 import com.mrostami.geckoincompose.model.TrendCoin
 import com.mrostami.geckoincompose.ui.components.StateView
@@ -28,7 +29,7 @@ fun TrendCoinsWidget(
     modifier: Modifier = Modifier,
     viewModel: TrendCoinsViewModel = hiltViewModel()
 ) {
-    val uiState = viewModel.uiState.collectAsState()
+    val uiState = viewModel.uiState.collectAsStateWithLifecycle()
     val listState = rememberLazyListState()
     StateView(
         uiModel = uiState.value,

@@ -3,10 +3,8 @@ package com.mrostami.geckoincompose.ui
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.mrostami.geckoincompose.data.remote.RemoteDataSource
-import com.mrostami.geckoincompose.domain.usecases.TrendCoinsUseCase
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.flow.collectLatest
 import kotlinx.coroutines.launch
 import timber.log.Timber
 import javax.inject.Inject
@@ -17,7 +15,7 @@ class MainViewModel @Inject constructor(
 ) : ViewModel() {
 
     init {
-//        getTrendCoins()
+        checkApiConnection()
     }
 
     fun checkApiConnection() {

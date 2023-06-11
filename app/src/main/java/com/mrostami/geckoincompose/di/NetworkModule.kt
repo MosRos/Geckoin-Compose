@@ -1,7 +1,7 @@
 package com.mrostami.geckoincompose.di
 
 import android.content.Context
-import androidx.annotation.NonNull
+import com.mrostami.geckoincompose.BuildConfig
 import com.mrostami.geckoincompose.data.remote.KtorHttpLogger
 import dagger.Module
 import dagger.Provides
@@ -15,6 +15,7 @@ import io.ktor.client.plugins.HttpTimeout
 import io.ktor.client.plugins.contentnegotiation.ContentNegotiation
 import io.ktor.client.plugins.defaultRequest
 import io.ktor.client.plugins.logging.LogLevel
+import io.ktor.client.plugins.logging.Logger
 import io.ktor.client.plugins.logging.Logging
 import io.ktor.http.URLBuilder
 import io.ktor.http.encodedPath
@@ -36,7 +37,7 @@ object NetworkModule {
 
     @Singleton
     @Provides
-    fun okHttpCache(@ApplicationContext context: Context): Cache {
+    fun provideOkHttpCache(@ApplicationContext context: Context): Cache {
         return Cache(context.cacheDir, 10 * 1000 * 1000)
     }
 
@@ -44,15 +45,14 @@ object NetworkModule {
     @Singleton
     fun loggingInterceptor(): HttpLoggingInterceptor {
         return HttpLoggingInterceptor().apply {
-            level = HttpLoggingInterceptor.Level.BODY
-//            level = if (BuildConfig.DEBUG) HttpLoggingInterceptor.Level.BODY else HttpLoggingInterceptor.Level.NONE
+            level = if (BuildConfig.DEBUG) HttpLoggingInterceptor.Level.BODY else HttpLoggingInterceptor.Level.NONE
         }
     }
 
 
     @Singleton
     @Provides
-    fun provideHttpClient(@NonNull loggingInterceptor: HttpLoggingInterceptor): OkHttpClient {
+    fun provideOkHttp(loggingInterceptor: HttpLoggingInterceptor): OkHttpClient {
         return OkHttpClient.Builder()
             .addInterceptor(loggingInterceptor)
             .connectTimeout(15, TimeUnit.SECONDS)
@@ -62,8 +62,12 @@ object NetworkModule {
 
     @Singleton
     @Provides
+    fun provideKtorLogger() : Logger = KtorHttpLogger()
+
+    @Singleton
+    @Provides
     @Named("ktor-android")
-    fun provideKtorClient(): HttpClient {
+    fun provideKtorClient(ktorLogger: Logger): HttpClient {
         return HttpClient(Android) {
             defaultRequest {
                 url.takeFrom(URLBuilder().takeFrom(BASE_URL).apply {
@@ -79,7 +83,7 @@ object NetworkModule {
                 socketTimeoutMillis = 15_000
             }
             install(Logging) {
-                logger = KtorHttpLogger()
+                logger = ktorLogger
                 level = LogLevel.BODY
             }
 //            HttpResponseValidator {  }
@@ -93,7 +97,7 @@ object NetworkModule {
     @Singleton
     @Provides
     @Named("ktor-okhttp")
-    fun proviceKtorOkhttp(
+    fun provideKtorOkhttp(
         okHttpClient: OkHttpClient,
         loggingInterceptor: HttpLoggingInterceptor,
         cache: Cache
@@ -102,9 +106,9 @@ object NetworkModule {
             engine {
                 config {
                     followRedirects(true)
-                    connectTimeout(20, TimeUnit.SECONDS)
-                    readTimeout(20, TimeUnit.SECONDS)
-                    writeTimeout(20, TimeUnit.SECONDS)
+                    connectTimeout(40, TimeUnit.SECONDS)
+                    readTimeout(50, TimeUnit.SECONDS)
+                    writeTimeout(30, TimeUnit.SECONDS)
                     cache(cache)
                     addInterceptor(loggingInterceptor)
                     retryOnConnectionFailure(true)
@@ -115,7 +119,7 @@ object NetworkModule {
                 json(
                     Json {
                         prettyPrint = true
-//                        isLenient = true
+                        isLenient = true
                         ignoreUnknownKeys = true
                     }
                 )
