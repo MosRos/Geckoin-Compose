@@ -2,6 +2,7 @@ package com.mrostami.geckoincompose.data.remote
 
 import arrow.core.Either
 import com.mrostami.geckoin.data.remote.responses.CoinGeckoApiError
+import com.mrostami.geckoin.data.remote.responses.toCustomExceptions
 import io.ktor.client.HttpClient
 import io.ktor.client.call.body
 import io.ktor.client.request.HttpRequestBuilder
@@ -23,9 +24,9 @@ class CoinGeckoKtorClient @Inject constructor(
             .get(url, requestBuilder)
             .body<T>()
         Either.Right(result)
-    } catch (t: Throwable) {
-        Timber.e(t)
-        Either.Left(CoinGeckoApiError(error = t.message))
+    } catch (e: Exception) {
+        Timber.e(e)
+        Either.Left(e.toCustomExceptions())
     }
 
     suspend inline fun <reified T> post(
@@ -36,9 +37,9 @@ class CoinGeckoKtorClient @Inject constructor(
             .post(url, requestBuilder)
             .body<T>()
         Either.Right(result)
-    } catch (t: Throwable) {
-        Timber.e(t)
-        Either.Left(CoinGeckoApiError(error = t.message))
+    } catch (e: Exception) {
+        Timber.e(e)
+        Either.Left(e.toCustomExceptions())
     }
 
     suspend inline fun <reified T> put(
@@ -49,8 +50,8 @@ class CoinGeckoKtorClient @Inject constructor(
             .put(url, requestBuilder)
             .body<T>()
         Either.Right(result)
-    } catch (t: Throwable) {
-        Timber.e(t)
-        Either.Left(CoinGeckoApiError(error = t.message))
+    } catch (e: Exception) {
+        Timber.e(e)
+        Either.Left(e.toCustomExceptions())
     }
 }
