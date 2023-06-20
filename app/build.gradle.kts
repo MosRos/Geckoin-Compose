@@ -97,11 +97,11 @@ dependencies {
     implementation(platform(libs.androidx.compose.bom))
     implementation(libs.androidx.compose.foundation)
     implementation(libs.androidx.compose.foundation.layout)
-    implementation(libs.androidx.compose.material)
-    implementation(libs.androidx.compose.material.iconsExtended)
+//    implementation(libs.androidx.compose.material)
+//    implementation(libs.androidx.compose.material.iconsExtended)
     implementation(libs.androidx.compose.material3)
-    implementation(libs.androidx.compose.ui.googlefonts)
-    implementation(libs.androidx.compose.ui.tooling)
+//    implementation(libs.androidx.compose.ui.googlefonts)
+    debugImplementation(libs.androidx.compose.ui.tooling)
     implementation(libs.androidx.compose.ui.util)
     implementation(libs.androidx.constraintlayout.compose)
     implementation(libs.androidx.compose.animation)
@@ -139,7 +139,7 @@ dependencies {
     implementation(libs.datastore)
     implementation(libs.datastore.preferences)
     // Security And DataStore
-    implementation(libs.androidx.security)
+//    implementation(libs.androidx.security)
 
     // *** Room ***
     implementation(libs.androidx.room.runtime)
@@ -187,7 +187,6 @@ dependencies {
     implementation(libs.ktor.serialization)
     implementation(libs.ktor.serialization.json)
     implementation(libs.ktor.content.negotiation)
-//    implementation("com.github.haroldadmin:NetworkResponseAdapter:4.2.2")
 
     // Coil Image loading
     implementation(libs.coil.coil)
@@ -203,7 +202,7 @@ dependencies {
     implementation(libs.timber)
 
     implementation(libs.junit)
-    implementation(libs.robolectric)
+//    implementation(libs.robolectric)
     implementation(libs.androidx.test.core)
     implementation(libs.androidx.test.runner)
     implementation(libs.androidx.test.ext.junit)

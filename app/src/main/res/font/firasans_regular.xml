@@ -1,0 +1,7 @@
+<?xml version="1.0" encoding="utf-8"?>
+<font-family xmlns:app="http://schemas.android.com/apk/res-auto">
+    <font
+            app:font="@font/firasans_regular_font"
+            app:fontStyle="normal"
+            app:fontWeight="500" />
+</font-family>
