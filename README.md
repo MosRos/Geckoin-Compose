@@ -16,7 +16,7 @@ In this sample project I tried to develop a standard and modern android app with
 * Kotlin
 * Jetpack Compose: all screens and components developed with Compose. 
 * Clean Architecture 
-* MVVI design pattern with reducer for state managment
+* MVI design pattern with StateMachine for state managment
 * Offline-First with repository pattern(all screens except coin details page)
 * Kotlin Coroutines & Flows for concurrency, observer pattern and data streaming.
 * Room & DataStore For data persistence and caching. 
