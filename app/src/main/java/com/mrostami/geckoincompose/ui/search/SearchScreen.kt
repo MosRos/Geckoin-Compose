@@ -101,7 +101,7 @@ fun SearchAppBar(
     }
     Box(
         modifier = modifier
-            .background(color = GeckoinTheme.colorScheme.background)
+            .background(color = GeckoinTheme.colorScheme.surface)
             .padding(vertical = 10.dp)
     ) {
         SearchWidget(

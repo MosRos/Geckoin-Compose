@@ -4,9 +4,17 @@ import android.app.Application
 import android.util.Log
 import androidx.appcompat.app.AppCompatDelegate
 import androidx.hilt.work.HiltWorkerFactory
-import androidx.work.*
+import androidx.work.Configuration
+import androidx.work.Constraints
+import androidx.work.NetworkType
+import androidx.work.OneTimeWorkRequestBuilder
+import androidx.work.WorkManager
 import coil.ImageLoader
 import coil.ImageLoaderFactory
+import coil.decode.GifDecoder
+import coil.decode.SvgDecoder
+import coil.disk.DiskCache
+import coil.memory.MemoryCache
 import com.mrostami.geckoincompose.workers.SyncCoinsWorker
 import dagger.hilt.android.HiltAndroidApp
 import org.jetbrains.annotations.NonNls
@@ -30,6 +38,21 @@ class GeckoinApplication : Application(), Configuration.Provider, ImageLoaderFac
 
     override fun newImageLoader(): ImageLoader {
         return ImageLoader.Builder(this)
+            .memoryCache {
+                MemoryCache.Builder(this)
+                    .maxSizePercent(0.25)
+                    .build()
+            }
+            .diskCache {
+                DiskCache.Builder()
+                    .directory(this.applicationContext.cacheDir.resolve("image_cache"))
+                    .maxSizePercent(0.02)
+                    .build()
+            }
+            .components {
+                add(SvgDecoder.Factory())
+                add(GifDecoder.Factory())
+            }
             .crossfade(true)
             .build()
     }

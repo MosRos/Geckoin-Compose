@@ -5,7 +5,7 @@ import com.mrostami.geckoin.data.remote.responses.CoinGeckoApiError
 import com.mrostami.geckoin.data.remote.responses.CoinGeckoPingResponse
 import com.mrostami.geckoin.data.remote.responses.PriceChartResponse
 import com.mrostami.geckoin.data.remote.responses.TrendCoinsResponse
-import com.mrostami.geckoincompose.data.remote.responses.RankCoin
+import com.mrostami.geckoincompose.data.remote.responses.CoinRankingsResponse
 import com.mrostami.geckoincompose.model.BitcoinSimplePriceInfoResponse
 import com.mrostami.geckoincompose.model.Coin
 import com.mrostami.geckoincompose.model.RankedCoin
@@ -20,6 +20,8 @@ class RemoteDataSource @Inject constructor(
     private val coinGeckoKtorClient: CoinGeckoKtorClient
 ) : CoinGeckoService {
     private val BASE_URL: String = "https://api.coingecko.com/api/v3/"
+
+    private val COINSRANKINGS_BASE_URL = "https://api.coinranking.com/v2/"
 
     override suspend fun checkCoinGeckoConnection(): Either<CoinGeckoApiError, CoinGeckoPingResponse> {
         val url = BASE_URL + CoinGeckoService.PING_ENDPOINT
@@ -80,14 +82,20 @@ class RemoteDataSource @Inject constructor(
         page: Int,
         perPage: Int
     ): Either<CoinGeckoApiError, List<RankedCoin>> {
-        val url = BASE_URL + CoinGeckoService.MARKET_RANKS_ENDPOINT
-        return coinGeckoKtorClient.get<List<RankCoin>>(url) {
+        val url = COINSRANKINGS_BASE_URL + CoinGeckoService.COIN_RANKING_ENDPOINT
+        return coinGeckoKtorClient.get<CoinRankingsResponse>(url) {
             method = HttpMethod.Get
-            parameter("vs_currency", "usd")
-            parameter("page", page)
-            parameter("per_page", perPage)
-        }.map { rankCoins ->
-            rankCoins.map { RankCoin.toRankedEntity(it) }
+            parameter("offset", page)
+            parameter("limit", perPage)
+//            parameter("vs_currency", "usd")
+        }.map {
+            if (it.status == "success") {
+                it.data?.coins?.map { coin ->
+                    com.mrostami.geckoincompose.data.remote.responses.Coin.toRankedEntity(coin)
+                } ?: emptyList()
+            } else {
+                emptyList()
+            }
         }
     }
 }

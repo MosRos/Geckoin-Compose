@@ -57,10 +57,8 @@ class MarketRanksRepositoryImpl @Inject constructor(
                 maxSize = 200
             ),
             initialKey = 1,
-//            remoteMediator = marketRanksMediator,
-            pagingSourceFactory = {
-                networkMarketRanksPagingSource
-            }
+            remoteMediator = marketRanksMediator,
+            pagingSourceFactory = pagingSourceFactory
         ).flow
     }
 }

@@ -69,22 +69,22 @@ class TrendCoinsViewModel @Inject constructor(
 
 }
 
-sealed interface TrendCoinsEffects {
-    object NoEffect : TrendCoinsEffects
-}
-
-sealed interface TrendCoinsEvents {
-    object RefreshData : TrendCoinsEvents
-}
-
-@Immutable
-data class TrendCoinsUiState(
-    override val state: BaseUiState.State = BaseUiState.State.LOADING,
-    override val errorMessage: String? = null,
-    override val data: List<TrendCoin> = listOf()
-    ) : BaseUiState {
-        companion object {
-            val defaultInitiState = TrendCoinsUiState()
-        }
+    sealed interface TrendCoinsEffects {
+        object NoEffect : TrendCoinsEffects
     }
+
+    sealed interface TrendCoinsEvents {
+        object RefreshData : TrendCoinsEvents
+    }
+
+    @Immutable
+    data class TrendCoinsUiState(
+        override val state: BaseUiState.State = BaseUiState.State.LOADING,
+        override val errorMessage: String? = null,
+        override val data: List<TrendCoin> = listOf()
+        ) : BaseUiState {
+            companion object {
+                val defaultInitiState = TrendCoinsUiState()
+            }
+        }
 

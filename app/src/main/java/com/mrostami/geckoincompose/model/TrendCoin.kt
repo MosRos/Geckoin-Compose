@@ -10,25 +10,25 @@ import kotlinx.serialization.Serializable
 @Serializable
 data class TrendCoin(
     @SerialName("coin_id")
-    @PrimaryKey val coinId: Int,
+    @PrimaryKey var coinId: Int,
     @SerialName("id")
-    val id: String?,
+    var id: String?,
     @SerialName("large")
-    val large: String?,
+    var large: String?,
     @SerialName("market_cap_rank")
-    val marketCapRank: Int?,
+    var marketCapRank: Int?,
     @SerialName("name")
-    val name: String?,
+    var name: String?,
     @SerialName("price_btc")
-    val priceBtc: Double?,
+    var priceBtc: Double?,
     @SerialName("score")
-    val score: Double?,
+    var score: Double?,
     @SerialName("slug")
-    val slug: String?,
+    var slug: String?,
     @SerialName("small")
-    val small: String?,
+    var small: String?,
     @SerialName("symbol")
-    val symbol: String?,
+    var symbol: String?,
     @SerialName("thumb")
-    val thumb: String?
+    var thumb: String?
 )

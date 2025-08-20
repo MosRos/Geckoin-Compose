@@ -1,12 +1,9 @@
 package com.mrostami.geckoincompose.ui.settings
 
-import android.net.Uri
 import androidx.annotation.DrawableRes
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
-import androidx.compose.foundation.isSystemInDarkTheme
-import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.BoxWithConstraints
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
@@ -16,12 +13,18 @@ import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
+import androidx.compose.foundation.layout.wrapContentHeight
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.Divider
 import androidx.compose.material.Icon
 import androidx.compose.material.Text
+import androidx.compose.material3.BottomSheetDefaults
+import androidx.compose.material3.ExperimentalMaterial3Api
+import androidx.compose.material3.ModalBottomSheet
+import androidx.compose.material3.rememberModalBottomSheetState
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.CompositionLocalContext
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
@@ -31,10 +34,12 @@ import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
+import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import androidx.navigation.NavController
-import coil.compose.AsyncImage
 import com.mrostami.geckoincompose.R
+import com.mrostami.geckoincompose.model.ThemeMode
 import com.mrostami.geckoincompose.ui.theme.GeckoinTheme
+import com.mrostami.geckoincompose.utils.openLinkInBrowser
 
 @Composable
 fun SettingsScreen(
@@ -42,6 +47,19 @@ fun SettingsScreen(
     modifier: Modifier = Modifier,
     settingsViewModel: SettingsViewModel = hiltViewModel()
 ) {
+    val uiState = settingsViewModel.uiState.collectAsStateWithLifecycle()
+
+    val showThemeSelectBottomSheet = remember { mutableStateOf(false) }
+
+    ThemeSelectBottomSheet(
+        showBottomSheet = showThemeSelectBottomSheet.value,
+        onDismissBottomSheet = { showThemeSelectBottomSheet.value = false },
+        onThemeSelected = { themeMode ->
+            showThemeSelectBottomSheet.value = false
+            settingsViewModel.onNewEvent(event = SettingsViewModel.SettingsEvents.ChangeTheme(themeMode))
+        }
+    )
+
     BoxWithConstraints(
         modifier = modifier.fillMaxSize(),
         contentAlignment = Alignment.TopCenter
@@ -75,22 +93,36 @@ fun SettingsScreen(
             Spacer(modifier = modifier.size(110.dp))
             SettingsOptions(
                 modifier = Modifier
-                    .padding(top = 132.dp)
-            )
+                    .padding(top = 132.dp),
+                uiState = uiState.value
+            ) {
+                showThemeSelectBottomSheet.value = it
+            }
         }
     }
 }
 
 @Composable
 fun SettingsOptions(
-    modifier: Modifier = Modifier
+    modifier: Modifier = Modifier,
+    uiState: SettingsViewModel.SettingsUiState,
+    showThemeSelectBottomSheet: (Boolean) -> Unit,
+
 ) {
+    val mContext = LocalContext.current
+    val themeMode: ThemeMode = uiState.data.themeMode
+
+    val themeIconRes = when(themeMode) {
+        ThemeMode.AUTO -> R.drawable.ic_theme_auto
+        ThemeMode.LIGHT -> R.drawable.ic_sun
+        ThemeMode.DARK -> R.drawable.ic_moon
+    }
     Column {
         SettingOptionItem(
             title = "Theme Mode",
-            iconResId = if (isSystemInDarkTheme()) R.drawable.ic_moon else R.drawable.ic_sun
+            iconResId = themeIconRes
         ) {
-            // TODO: open theme settings dialog
+            showThemeSelectBottomSheet(true)
         }
         Divider(
             thickness = 1.dp,
@@ -99,7 +131,7 @@ fun SettingsOptions(
         )
         SettingOptionItem(title = "About Developer", iconResId = R.drawable.ic_code) {
             // TODO: open developer LinkedIn
-//            openLinkInBrowser()
+            openLinkInBrowser(context = mContext, url = "")
         }
         Divider(
             thickness = 1.dp,
@@ -121,7 +153,9 @@ fun SettingOptionItem(
         modifier = Modifier
             .fillMaxWidth()
             .height(55.dp)
-            .clickable { action.invoke() }
+            .clickable {
+                action.invoke()
+            }
             .padding(horizontal = 16.dp),
     ) {
         Icon(
@@ -140,5 +174,74 @@ fun SettingOptionItem(
                 .padding(start = 12.dp)
                 .align(Alignment.CenterVertically)
         )
+    }
+}
+
+
+@OptIn(ExperimentalMaterial3Api::class)
+@Composable
+fun ThemeSelectBottomSheet(
+    showBottomSheet: Boolean,
+    onDismissBottomSheet: () -> Unit,
+    onThemeSelected: (ThemeMode) -> Unit
+) {
+
+    val sheetState = rememberModalBottomSheetState()
+
+    if (showBottomSheet) {
+        ModalBottomSheet(
+            onDismissRequest = { onDismissBottomSheet() },
+            dragHandle = {
+                Column(modifier = Modifier.height(0.dp)) {
+                    BottomSheetDefaults.DragHandle()
+                }
+            },
+            sheetState = sheetState,
+            containerColor = GeckoinTheme.colorScheme.surface
+        ) {
+
+            Column(
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .wrapContentHeight()
+                    .padding(top = 40.dp, bottom = 45.dp, start = 24.dp, end = 24.dp)
+            ) {
+                SettingOptionItem(
+                    modifier = Modifier,
+                    title = "Follow System",
+                    iconResId = R.drawable.ic_theme_auto
+
+                ) {
+                    onThemeSelected(ThemeMode.AUTO)
+                }
+                Divider(
+                    thickness = 1.dp,
+                    color = GeckoinTheme.customColors.dividerColor,
+                    startIndent = 50.dp
+                )
+
+                SettingOptionItem(
+                    modifier = Modifier,
+                    title = "Light",
+                    iconResId = R.drawable.ic_sun
+
+                ) {
+                    onThemeSelected(ThemeMode.LIGHT)
+                }
+                Divider(
+                    thickness = 1.dp,
+                    color = GeckoinTheme.customColors.dividerColor,
+                    startIndent = 50.dp
+                )
+                SettingOptionItem(
+                    modifier = Modifier,
+                    title = "Dark",
+                    iconResId = R.drawable.ic_moon
+
+                ) {
+                    onThemeSelected(ThemeMode.DARK)
+                }
+            }
+        }
     }
 }

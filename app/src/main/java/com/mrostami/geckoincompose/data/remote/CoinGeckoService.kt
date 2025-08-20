@@ -20,6 +20,7 @@ interface CoinGeckoService {
         const val SIMPLE_PRICE_ENDPOINT = "simple/price"
         const val PRICE_CHART_ENDPOINT = "coins/{id}/market_chart"
         const val COIN_DETAIL = "coins/{id}"
+        const val COIN_RANKING_ENDPOINT = "coins/"
     }
 
     suspend fun checkCoinGeckoConnection() : Either<CoinGeckoApiError, CoinGeckoPingResponse>

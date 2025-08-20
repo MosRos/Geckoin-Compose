@@ -21,4 +21,19 @@ class RoomConverters {
         val type = object : TypeToken<List<MarketCapPercentageItem>>() {}.type
         return gson.fromJson(mCapsString as? String, type)
     }
+
+//    @TypeConverter
+//    fun fromMCPercentagesList(value: List<MarketCapPercentageItem>?): String? {
+//        if (value == null) return null
+//        val gson = Gson()
+//        return gson.toJson(value)
+//    }
+//
+//    @TypeConverter
+//    fun toMCPercentagesList(value: String?): List<MarketCapPercentageItem>? {
+//        if (value == null) return null
+//        val gson = Gson()
+//        val type = object : TypeToken<List<MarketCapPercentageItem>>() {}.type
+//        return gson.fromJson(value, type)
+//    }
 }

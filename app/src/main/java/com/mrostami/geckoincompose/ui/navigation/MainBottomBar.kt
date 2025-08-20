@@ -3,19 +3,28 @@ package com.mrostami.geckoincompose.ui.navigation
 import androidx.annotation.DrawableRes
 import androidx.annotation.StringRes
 import androidx.compose.animation.AnimatedVisibility
-import androidx.compose.foundation.background
+import androidx.compose.animation.fadeIn
+import androidx.compose.animation.fadeOut
+import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.RowScope
+import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.navigationBarsPadding
+import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.wrapContentHeight
 import androidx.compose.material.BottomNavigation
 import androidx.compose.material.BottomNavigationItem
 import androidx.compose.material.Icon
 import androidx.compose.material.Text
+import androidx.compose.material.TopAppBar
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
+import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
+import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.text.style.TextOverflow
+import androidx.compose.ui.unit.dp
 import androidx.navigation.NavDestination
 import androidx.navigation.NavDestination.Companion.hierarchy
 import androidx.navigation.NavGraph.Companion.findStartDestination
@@ -66,6 +75,48 @@ val mainScreens = listOf(
     MainScreen.Search,
     MainScreen.Settings
 )
+
+@Composable
+fun MainTopBar(
+    navHostController: NavHostController
+) {
+    val navBackStackEntry by navHostController.currentBackStackEntryAsState()
+    val currentDestination = navBackStackEntry?.destination
+    val screenTitle: String = when(currentDestination?.route) {
+        MainScreen.Home.route -> stringResource(MainScreen.Home.title)
+        MainScreen.Market.route -> stringResource(MainScreen.Market.title)
+        MainScreen.Search.route -> stringResource(MainScreen.Search.title)
+        MainScreen.Settings.route -> stringResource(MainScreen.Settings.title)
+        else -> ""
+    }
+    AnimatedVisibility(
+        visible = currentDestination?.route != MainScreen.Search.route,
+        enter = fadeIn(),
+        exit = fadeOut()
+    ) {
+        TopAppBar(
+            modifier = Modifier.navigationBarsPadding(),
+            title = {
+                Box(
+                    modifier = Modifier
+                        .fillMaxWidth()
+                        .wrapContentHeight()
+                ) {
+                    Text(
+                        modifier = Modifier
+                            .align(alignment = Alignment.Center)
+                            .padding(vertical = 10.dp),
+                        text = screenTitle,
+                        style = GeckoinTheme.typography.headlineMedium,
+                        color = GeckoinTheme.colorScheme.onSurface,
+                        textAlign = TextAlign.Center,
+                    )
+                }
+            },
+            backgroundColor = GeckoinTheme.colorScheme.surface
+        )
+    }
+}
 
 @Composable
 fun MainBottomBar(

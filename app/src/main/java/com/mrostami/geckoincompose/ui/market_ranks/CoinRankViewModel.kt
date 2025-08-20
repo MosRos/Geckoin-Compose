@@ -4,13 +4,12 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import androidx.paging.PagingData
 import androidx.paging.cachedIn
-import com.mrostami.geckoincompose.domain.base.Result
+import com.mrostami.geckoincompose.domain.base.succeeded
 import com.mrostami.geckoincompose.domain.usecases.InitRankedCoinsPagingUseCase
 import com.mrostami.geckoincompose.domain.usecases.MarketRanksUseCase
 import com.mrostami.geckoincompose.model.RankedCoin
 import com.mrostami.geckoincompose.ui.base.BaseUiState
 import dagger.hilt.android.lifecycle.HiltViewModel
-import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.collectLatest
@@ -20,7 +19,9 @@ import javax.inject.Inject
 
 @HiltViewModel
 class CoinRankViewModel @Inject constructor(
-    private val cryptoRanksUseCase: MarketRanksUseCase) : ViewModel() {
+    private val cryptoRanksUseCase: MarketRanksUseCase,
+    private val initRankedCoinsPagingUseCase: InitRankedCoinsPagingUseCase
+) : ViewModel() {
 
     private val _uiSate: MutableStateFlow<RanksUiState> =
         MutableStateFlow(RanksUiState.defaultState)
@@ -29,6 +30,14 @@ class CoinRankViewModel @Inject constructor(
 
 
     init {
+        viewModelScope.launch {
+            initRankedCoinsPagingUseCase.invoke(initSize = 1).collectLatest {
+                if (it.succeeded) observeRanksFlow()
+            }
+        }
+    }
+
+    private fun observeRanksFlow() {
         rankedCoinsStateFlow()
     }
 

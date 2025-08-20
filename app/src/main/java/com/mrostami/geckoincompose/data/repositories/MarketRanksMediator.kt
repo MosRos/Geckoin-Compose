@@ -55,14 +55,13 @@ class MarketRanksMediator @Inject constructor(
                 val prevKey = remoteKeys?.prevKey ?: return MediatorResult.Success(
                     endOfPaginationReached = true
                 )
-                prevKey
+                prevKey  ?: COINGECKO_STARTING_PAGE_INDEX
             }
             LoadType.APPEND -> {
                 val remoteKeys: CoinsRemoteKeys? = getRemoteKeyForLastItem(state)
-                if (remoteKeys?.nextKey == null) {
-                    throw InvalidObjectException("Remote key should not be null for $loadType")
-                }
-                remoteKeys.nextKey
+                remoteKeys?.nextKey  ?: return MediatorResult.Success(
+                    endOfPaginationReached = false
+                )
             }
 
         }

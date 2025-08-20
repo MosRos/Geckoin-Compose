@@ -24,14 +24,15 @@ import com.mrostami.geckoincompose.ui.theme.GeckoinTheme
 
 @Composable
 fun MarketRankScreen(
-    navController: NavController,
     modifier: Modifier = Modifier,
+    navController: NavController,
     viewModel: CoinRankViewModel = hiltViewModel()
 ) {
     val pagedCoins: LazyPagingItems<RankedCoin> = viewModel.rankedCoinsStateFlow().collectAsLazyPagingItems()
 
     val listState = rememberLazyListState()
     LazyColumn(
+        modifier = modifier,
         state = listState
     ) {
         items(

@@ -19,6 +19,6 @@ data class CoinsRemoteKeys(
     @PrimaryKey
     var coin_Id: String = "fff000xxxdos",
     @SerializedName("id")
-    val prevKey: Int?,
-    val nextKey: Int?
+    var prevKey: Int?,
+    var nextKey: Int?
 )

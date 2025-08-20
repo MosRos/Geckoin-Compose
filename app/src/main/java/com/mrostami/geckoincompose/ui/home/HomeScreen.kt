@@ -20,11 +20,12 @@ import com.mrostami.geckoincompose.ui.theme.GeckoinTheme
 
 @Composable
 fun HomeScreen(
+    modifier: Modifier,
     title: String,
     navController: NavController
 ) {
     Column(
-        modifier = Modifier
+        modifier = modifier
             .fillMaxSize()
             .background(color = GeckoinTheme.colorScheme.background),
         verticalArrangement = Arrangement.Center,

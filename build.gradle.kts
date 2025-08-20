@@ -6,7 +6,7 @@ plugins {
     alias(libs.plugins.kotlin.serialization)
     alias(libs.plugins.kapt) apply false
     alias(libs.plugins.hilt) apply false
-    alias(libs.plugins.ksp) apply false
+//    alias(libs.plugins.ksp) apply false
     alias(libs.plugins.gradle.versions) apply false
 }
 true

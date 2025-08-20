@@ -1,7 +1,6 @@
 package com.mrostami.geckoincompose.data.repositories
 
 import arrow.core.Either
-import com.mrostami.geckoin.data.remote.responses.CoinGeckoApiError
 import com.mrostami.geckoincompose.domain.base.Result
 import com.mrostami.geckoincompose.utils.NetworkUtils
 import kotlinx.coroutines.CoroutineDispatcher
@@ -39,15 +38,15 @@ abstract class RepositoryResourceAdapter<in P : Any?, T : Any?, U : Any, V : Any
 ) {
     abstract suspend fun getFromDatabase(): T?
     abstract suspend fun validateCache(cachedData: T?): Boolean
-    abstract fun shouldFetchFromApi() : Boolean
+    abstract fun shouldFetchFromApi(): Boolean
     abstract suspend fun getFromApi(): Either<V, U>
     abstract suspend fun persistData(apiData: U)
 
-    operator fun invoke(parameters: P) : Flow<Result<T>> = execute(parameters)
+    operator fun invoke(parameters: P): Flow<Result<T>> = execute(parameters)
         .catch { e -> emit(Result.Error(Exception(e))) }
         .flowOn(coroutineDispatcher)
 
-    open fun execute(parameters: P) : Flow<Result<T>> = flow {
+    open fun execute(parameters: P): Flow<Result<T>> = flow {
         val cachedData = getFromDatabase()
 
         if (validateCache(cachedData) && cachedData != null) {
@@ -66,7 +65,12 @@ abstract class RepositoryResourceAdapter<in P : Any?, T : Any?, U : Any, V : Any
                     if (validateCache(refreshedData)) {
                         emit(Result.Success(refreshedData!!))
                     } else {
-                        emit(Result.Error(Exception("Oops!"), message = "Failed to load cached data"))
+                        emit(
+                            Result.Error(
+                                Exception("Oops!"),
+                                message = "Failed to load cached data"
+                            )
+                        )
                     }
                 }
                 apiResponse.onLeft {
@@ -74,69 +78,13 @@ abstract class RepositoryResourceAdapter<in P : Any?, T : Any?, U : Any, V : Any
                 }
             } else {
                 delay(200L)
-                emit(Result.Error(Exception("No internet connection"), message = "No internet connection"))
+//                emit(
+//                    Result.Error(
+//                        Exception("No internet connection"),
+//                        message = "No internet connection"
+//                    )
+//                )
             }
         }
-    }
-}
-
-abstract class RepositoryAdapter<in P: Any?, T: Any, R: Any>(
-    val networkRequest: (parameters: P) -> Either<CoinGeckoApiError, T>,
-    val responseMapper: ((T) -> R)? = null,
-    val dbReader: ((parameters: P) -> R)? = null,
-    val dbWriter: ((R) -> Unit)? = null,
-    val forceRefresh: Boolean = false,
-    val rateLimiter: Long = 5000,
-    val coroutineDispatcher: CoroutineDispatcher = Dispatchers.IO
-) {
-    private var lastRequestTime: Long = 0L
-
-    operator fun invoke(parameters: P) : Flow<Result<R>> = flow {
-
-        val cachedData: R? = dbReader?.invoke(parameters)
-        if (cachedData != null) {
-            emit(Result.Success(cachedData))
-        }
-
-        emit(Result.Loading)
-        if (NetworkUtils.isConnected()) {
-            if (notLimited() || forceRefresh) {
-                try {
-                    val response = networkRequest.invoke(parameters)
-                    response.onRight {
-                        val data: R? = responseMapper?.invoke(it)
-                        if (data != null) {
-                            dbWriter?.invoke(data)
-                        }
-                        val refreshedData: R? = dbReader?.invoke(parameters)
-                        if (refreshedData != null) {
-                            emit(Result.Success(refreshedData))
-                        } else {
-                            emit(
-                                Result.Error(
-                                    Exception("Oops!"),
-                                    message = "Failed to load cached data"
-                                )
-                            )
-                        }
-                    }
-                    response.onLeft {
-                        emit(Result.Error(Exception(it.error)))
-                    }
-                } catch (e: Exception) {
-                    emit(Result.Error(exception = e))
-                }
-            }
-        } else {
-            delay(200)
-            emit(Result.Error(Exception("No internet connection"), message = "No internet connection"))
-        }
-    }.catch { e ->
-        emit(Result.Error(Exception(e)))
-    }.flowOn(coroutineDispatcher)
-
-    private fun notLimited() : Boolean {
-        val trigger: Long = System.currentTimeMillis() - lastRequestTime
-        return forceRefresh || trigger > rateLimiter
     }
 }

@@ -14,7 +14,7 @@ fun HttpClientConfig<*>.KtorResponseInterceptor() {
     val block:  (HttpCallValidator.Config) -> Unit = {
         it.handleResponseExceptionWithRequest { cause, request ->
             when(cause) {
-                is ClientRequestException -> { // ktor: 400番台のエラー
+                is ClientRequestException -> { // ktor: 400
                     val errorResponse = cause.response
                     val message =
                         Json.decodeFromString<CoinGeckoApiError>(cause.response.body()).error

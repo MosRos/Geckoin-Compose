@@ -7,7 +7,7 @@ plugins {
     alias(libs.plugins.kotlin.parcelize)
     alias(libs.plugins.kotlin.serialization)
     alias(libs.plugins.kapt)
-    alias(libs.plugins.ksp)
+//    alias(libs.plugins.ksp)
     alias(libs.plugins.hilt)
 }
 
@@ -56,9 +56,9 @@ android {
         targetCompatibility = JavaVersion.VERSION_17
     }
 
-//    kotlinOptions {
-//        jvmTarget = "1.8"
-//    }
+    kotlinOptions {
+        jvmTarget = "17"
+    }
     buildFeatures {
         buildConfig = true
         compose = true
@@ -66,6 +66,16 @@ android {
     composeOptions {
         kotlinCompilerExtensionVersion = libs.versions.compose.compiler.get()
     }
+    kapt {
+        correctErrorTypes = false
+        includeCompileClasspath = false
+        javacOptions {
+            option("-J--add-exports=jdk.compiler/com.sun.tools.javac.main=ALL-UNNAMED")
+        }
+    }
+//    ksp {
+//        arg("room.generateKotlin", "true")
+//    }
     packaging {
         resources {
             excludes += "/META-INF/{DEPENDENCIES, LICENSE, LICENSE.txt, license.txt, NOTICE, NOTICE.txt, notice.txt, ASL2.0, LGPL2.1, AL2.0, *.kotlin_module}"
@@ -191,6 +201,8 @@ dependencies {
     // Coil Image loading
     implementation(libs.coil.coil)
     implementation(libs.coil.kt.compose)
+    implementation(libs.coil.svg)
+    implementation(libs.coil.gif)
 
     // Charts
     implementation(libs.vico.core)

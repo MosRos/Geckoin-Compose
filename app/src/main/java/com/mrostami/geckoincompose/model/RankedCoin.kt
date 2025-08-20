@@ -60,4 +60,5 @@ data class RankedCoin(
     var totalSupply: Double? = null, // null
     @SerializedName("total_volume")
     var totalVolume: Double? = null, // 14969737842
-)
+) {
+}

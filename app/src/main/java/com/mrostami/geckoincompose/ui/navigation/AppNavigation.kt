@@ -33,20 +33,34 @@ fun AppNavigation(
         navController = navController,
         startDestination = startDestination
     ) {
-        homepage(navController = navController)
-        market(navController = navController)
-        search(navController = navController)
-        settings(navController = navController)
+        homepage(
+            modifier = modifier,
+            navController = navController
+        )
+        market(
+            modifier = modifier,
+            navController = navController
+        )
+        search(
+            modifier = modifier,
+            navController = navController
+        )
+        settings(
+            modifier = modifier,
+            navController = navController
+        )
     }
 }
 
 fun NavGraphBuilder.homepage(
+    modifier: Modifier,
     navController: NavController
 ) {
     composable(
         route = MainScreen.Home.route
     ) {
         HomeScreen(
+            modifier = modifier,
             title = stringResource(id = MainScreen.Home.title),
             navController = navController
         )
@@ -54,12 +68,14 @@ fun NavGraphBuilder.homepage(
 }
 
 fun NavGraphBuilder.market(
+    modifier: Modifier,
     navController: NavController
 ) {
     composable(
         route = MainScreen.Market.route
     ) {
         MarketRankScreen(
+            modifier = modifier,
 //            title = stringResource(id = MainScreen.Market.title),
             navController = navController
         )
@@ -67,10 +83,12 @@ fun NavGraphBuilder.market(
 }
 
 fun NavGraphBuilder.search(
+    modifier: Modifier,
     navController: NavController
 ) {
     composable(route = MainScreen.Search.route) {
         SearchScreen(
+            modifier = modifier,
             title = stringResource(id = MainScreen.Search.title),
             navController = navController
         )
@@ -78,9 +96,13 @@ fun NavGraphBuilder.search(
 }
 
 fun NavGraphBuilder.settings(
+    modifier: Modifier,
     navController: NavController
 ) {
     composable(route = MainScreen.Settings.route) {
-        SettingsScreen(navController = navController)
+        SettingsScreen(
+            modifier = modifier,
+            navController = navController
+        )
     }
 }

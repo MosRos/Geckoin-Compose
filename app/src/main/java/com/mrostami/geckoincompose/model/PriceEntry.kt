@@ -5,7 +5,7 @@ import androidx.room.PrimaryKey
 
 @Entity
 data class PriceEntry(
-    @PrimaryKey val timeStamp: Long = 0L,
-    val coinId: String = "bitcoin",
+    @PrimaryKey var timeStamp: Long = 0L,
+    var coinId: String = "bitcoin",
     var price: Double = 0.0
 )

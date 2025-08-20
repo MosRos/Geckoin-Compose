@@ -5,6 +5,6 @@ import kotlinx.serialization.Serializable
 
 @Serializable
 data class BitcoinSimplePriceInfoResponse(
-    @SerialName("bitcoin") val bitcoin: SimplePriceInfo?,
+    @SerialName("bitcoin") var bitcoin: SimplePriceInfo?,
 //    @SerializedName("ethereum") val ethereum: SimpleCoinInfo?
 )

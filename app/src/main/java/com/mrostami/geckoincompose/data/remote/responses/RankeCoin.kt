@@ -4,7 +4,6 @@ import com.mrostami.geckoincompose.model.RankedCoin
 import com.mrostami.geckoincompose.model.Roi
 import kotlinx.serialization.SerialName
 import kotlinx.serialization.Serializable
-import kotlinx.serialization.Serializer
 
 @Serializable
 data class RankCoin(
@@ -22,7 +21,7 @@ data class RankCoin(
     @SerialName("atl_date")
     val atlDate: String?, // 2015-10-20T00:00:00.000Z
     @SerialName("fully_diluted_valuation")
-    val fullyDilutedValuation: Int,
+    val fullyDilutedValuation: Long,
     @SerialName("circulating_supply")
     val circulatingSupply: Double?, // 110463081.8115
     @SerialName("current_price")
@@ -55,7 +54,7 @@ data class RankCoin(
     @SerialName("total_supply")
     val totalSupply: Double?, // null
     @SerialName("max_supply")
-    val maxSupply: Int,
+    val maxSupply: Double?,
     @SerialName("total_volume")
     val totalVolume: Double?, // 14969737842
 ) {

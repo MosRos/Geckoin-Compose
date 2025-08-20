@@ -6,6 +6,6 @@ import androidx.room.PrimaryKey
 
 @Entity
 data class EthereumPriceInfo(
-    @PrimaryKey val id: String = "ethereum",
+    @PrimaryKey var id: String = "ethereum",
     @Embedded var info: SimplePriceInfo
 )

@@ -24,26 +24,21 @@ fun SearchWidget(
     value: String = "search any coin",
     onQueryChanged: (String) -> Unit = {}
 ) {
-    Box(modifier = modifier
-        .background(
-            color = GeckoinTheme.colorScheme.background,
-            shape = GeckoinTheme.shapes.medium
-        )
-        .border(
-            width = 1.dp,
-            color = GeckoinTheme.colorScheme.outline,
-            shape = GeckoinTheme.shapes.medium
-        )
-        .fillMaxWidth()
-    ) {
+    Box(modifier = modifier.fillMaxWidth()) {
         TextField(
             value = value,
             onValueChange = onQueryChanged,
             modifier = Modifier
                 .fillMaxWidth()
+                .padding(vertical = 12.dp)
                 .height(50.dp)
                 .background(
-                    color = GeckoinTheme.colorScheme.surface,
+                    color = GeckoinTheme.colorScheme.background,
+                    shape = GeckoinTheme.shapes.medium
+                )
+                .border(
+                    width = 1.dp,
+                    color = GeckoinTheme.colorScheme.outline,
                     shape = GeckoinTheme.shapes.medium
                 ),
             textStyle = GeckoinTheme.typography.bodyMedium,
@@ -55,7 +50,6 @@ fun SearchWidget(
                     modifier = Modifier.padding(8.dp)
                 )
             },
-            shape = GeckoinTheme.shapes.medium,
             singleLine = true,
             colors = androidx.compose.material.TextFieldDefaults.textFieldColors(
                 disabledTextColor = GeckoinTheme.customColors.iconColor,
