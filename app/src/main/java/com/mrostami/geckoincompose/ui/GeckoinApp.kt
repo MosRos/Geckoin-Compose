@@ -28,9 +28,6 @@ fun GeckoinApp(
         val showBottomNav = rememberSaveable { mutableStateOf(true) }
         Scaffold (
             containerColor = GeckoinTheme.colorScheme.background,
-            topBar = {
-                MainTopBar(navHostController = navController)
-            },
             bottomBar = {
                 MainBottomBar(
                     navController = navController

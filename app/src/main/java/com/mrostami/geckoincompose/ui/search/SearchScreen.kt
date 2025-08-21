@@ -53,7 +53,8 @@ fun SearchScreen(
                 viewModel = viewModel,
                 showProgress = showProgressBar
             )
-        }
+        },
+        backgroundColor = GeckoinTheme.colorScheme.background
     ) {
         Column(
             modifier = Modifier

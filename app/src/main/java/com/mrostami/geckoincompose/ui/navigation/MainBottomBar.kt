@@ -25,6 +25,7 @@ import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
+import androidx.navigation.NavController
 import androidx.navigation.NavDestination
 import androidx.navigation.NavDestination.Companion.hierarchy
 import androidx.navigation.NavGraph.Companion.findStartDestination
@@ -90,7 +91,49 @@ fun MainTopBar(
         else -> ""
     }
     AnimatedVisibility(
-        visible = currentDestination?.route != MainScreen.Search.route,
+        visible = true,
+        enter = fadeIn(),
+        exit = fadeOut()
+    ) {
+        TopAppBar(
+            modifier = Modifier.navigationBarsPadding(),
+            title = {
+                Box(
+                    modifier = Modifier
+                        .fillMaxWidth()
+                        .wrapContentHeight()
+                ) {
+                    Text(
+                        modifier = Modifier
+                            .align(alignment = Alignment.Center)
+                            .padding(vertical = 10.dp),
+                        text = screenTitle,
+                        style = GeckoinTheme.typography.headlineMedium,
+                        color = GeckoinTheme.colorScheme.onSurface,
+                        textAlign = TextAlign.Center,
+                    )
+                }
+            },
+            backgroundColor = GeckoinTheme.colorScheme.surface
+        )
+    }
+}
+
+@Composable
+fun MainTopBar(
+    navHostController: NavController
+) {
+    val navBackStackEntry by navHostController.currentBackStackEntryAsState()
+    val currentDestination = navBackStackEntry?.destination
+    val screenTitle: String = when(currentDestination?.route) {
+        MainScreen.Home.route -> stringResource(MainScreen.Home.title)
+        MainScreen.Market.route -> stringResource(MainScreen.Market.title)
+        MainScreen.Search.route -> stringResource(MainScreen.Search.title)
+        MainScreen.Settings.route -> stringResource(MainScreen.Settings.title)
+        else -> ""
+    }
+    AnimatedVisibility(
+        visible = true,
         enter = fadeIn(),
         exit = fadeOut()
     ) {

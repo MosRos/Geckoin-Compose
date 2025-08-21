@@ -17,6 +17,7 @@ import androidx.compose.foundation.layout.wrapContentHeight
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.Divider
 import androidx.compose.material.Icon
+import androidx.compose.material.Scaffold
 import androidx.compose.material.Text
 import androidx.compose.material3.BottomSheetDefaults
 import androidx.compose.material3.ExperimentalMaterial3Api
@@ -38,6 +39,8 @@ import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import androidx.navigation.NavController
 import com.mrostami.geckoincompose.R
 import com.mrostami.geckoincompose.model.ThemeMode
+import com.mrostami.geckoincompose.ui.navigation.MainTopBar
+import com.mrostami.geckoincompose.ui.search.SearchAppBar
 import com.mrostami.geckoincompose.ui.theme.GeckoinTheme
 import com.mrostami.geckoincompose.utils.openLinkInBrowser
 
@@ -59,44 +62,53 @@ fun SettingsScreen(
             settingsViewModel.onNewEvent(event = SettingsViewModel.SettingsEvents.ChangeTheme(themeMode))
         }
     )
-
-    BoxWithConstraints(
-        modifier = modifier.fillMaxSize(),
-        contentAlignment = Alignment.TopCenter
-    ) {
-        val imageSize = (maxWidth / 3)
-        Column(
+    Scaffold(
+        modifier = modifier,
+        topBar = {
+            MainTopBar(navHostController = navController)
+        },
+        backgroundColor = GeckoinTheme.colorScheme.background
+    ) { paddings ->
+        BoxWithConstraints(
             modifier = Modifier
                 .fillMaxSize()
-                .background(color = GeckoinTheme.colorScheme.background),
-            horizontalAlignment = Alignment.CenterHorizontally
+                .padding(paddings),
+            contentAlignment = Alignment.TopCenter
         ) {
-            Spacer(modifier = modifier.size(80.dp))
-            Image(
-                painter = painterResource(id = R.mipmap.ic_launcher_foreground), // painterResource(id = R.drawable.bitcoin_logo),
-                contentDescription = "app icon",
-                contentScale = ContentScale.Fit,
+            val imageSize = (maxWidth / 3)
+            Column(
                 modifier = Modifier
-                    .size(100.dp)
-                    .clip(RoundedCornerShape(size = 16.dp))
-                    .align(Alignment.CenterHorizontally)
-
-            )
-            Text(
-                text = stringResource(id = R.string.app_name),
-                style = GeckoinTheme.typography.titleMedium,
-                color = GeckoinTheme.customColors.textPrimary,
-                modifier = Modifier
-                    .padding(top = 16.dp)
-                    .align(Alignment.CenterHorizontally)
-            )
-            Spacer(modifier = modifier.size(110.dp))
-            SettingsOptions(
-                modifier = Modifier
-                    .padding(top = 132.dp),
-                uiState = uiState.value
+                    .fillMaxSize()
+                    .background(color = GeckoinTheme.colorScheme.background),
+                horizontalAlignment = Alignment.CenterHorizontally
             ) {
-                showThemeSelectBottomSheet.value = it
+                Spacer(modifier = modifier.size(80.dp))
+                Image(
+                    painter = painterResource(id = R.mipmap.ic_launcher_foreground), // painterResource(id = R.drawable.bitcoin_logo),
+                    contentDescription = "app icon",
+                    contentScale = ContentScale.Fit,
+                    modifier = Modifier
+                        .size(100.dp)
+                        .clip(RoundedCornerShape(size = 16.dp))
+                        .align(Alignment.CenterHorizontally)
+
+                )
+                Text(
+                    text = stringResource(id = R.string.app_name),
+                    style = GeckoinTheme.typography.titleMedium,
+                    color = GeckoinTheme.customColors.textPrimary,
+                    modifier = Modifier
+                        .padding(top = 16.dp)
+                        .align(Alignment.CenterHorizontally)
+                )
+                Spacer(modifier = modifier.size(110.dp))
+                SettingsOptions(
+                    modifier = Modifier
+                        .padding(top = 132.dp),
+                    uiState = uiState.value
+                ) {
+                    showThemeSelectBottomSheet.value = it
+                }
             }
         }
     }
