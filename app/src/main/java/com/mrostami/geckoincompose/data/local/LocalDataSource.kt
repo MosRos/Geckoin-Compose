@@ -134,4 +134,6 @@ class LocalDataSource @Inject constructor(
         allCoinsDao.searchPagedCoins(input)
 
     override fun getPagedCoins(): PagingSource<Int, Coin> = allCoinsDao.getPagedCoins()
+
+    override suspend fun getRankedCoinsList(offset: Int, limit: Int): List<RankedCoin> = cryptoMarketDao.getRankedCoinsList(offset, limit)
 }

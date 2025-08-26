@@ -31,7 +31,7 @@ import androidx.constraintlayout.compose.ConstraintLayout
 import androidx.constraintlayout.compose.Dimension
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
-import coil.compose.AsyncImage
+import coil3.compose.AsyncImage
 import com.mrostami.geckoincompose.R
 import com.mrostami.geckoincompose.model.BitcoinPriceInfo
 import com.mrostami.geckoincompose.ui.components.StateView
@@ -91,7 +91,7 @@ fun BtcChartWidget(
                     modifier = Modifier.background(color = GeckoinTheme.colorScheme.surface)
                 ) {
                     BtcBasicInfoView(btcPriceInfo = uiState.value.data.btcPriceInfo)
-                    TenDaysLineChart(data = uiState.value.data.btcChartInfo)
+                    TenDaysLineChart(rawData = uiState.value.data.btcChartInfo)
                 }
             }
         }

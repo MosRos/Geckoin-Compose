@@ -51,6 +51,7 @@ import androidx.compose.ui.unit.LayoutDirection
 import androidx.compose.ui.unit.TextUnit
 import com.mrostami.geckoincompose.ui.theme.GeckoinTheme
 import com.mrostami.geckoincompose.utils.round
+import java.util.Locale
 import kotlin.math.cos
 import kotlin.math.sin
 
@@ -160,8 +161,9 @@ fun PieChart(
                             .width(Dp(38f)),
                         contentAlignment = Alignment.Center
                     ) {
+                        data.toList().get(index).first
                         Text(
-                            text = data.toList().get(index).first.toUpperCase(),
+                            text = Locale.getDefault().toString().uppercase(),
                             color = Color.Black,
                             style = GeckoinTheme.typography.labelSmall
                         )

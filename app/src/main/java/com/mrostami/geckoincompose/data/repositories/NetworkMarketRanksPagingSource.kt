@@ -22,7 +22,7 @@ class NetworkMarketRanksPagingSource @Inject constructor(
     override suspend fun load(params: LoadParams<Int>): LoadResult<Int, RankedCoin> {
         return try {
             val page = params.key ?: 1
-            val response = remoteDataSource.getPagedMarketRanks(page = page, perPage = PAGE_SIZE)
+            val response = remoteDataSource.getPagedMarketRanks(offset = page, limit = PAGE_SIZE)
                 .fold(
                     {
                         listOf()

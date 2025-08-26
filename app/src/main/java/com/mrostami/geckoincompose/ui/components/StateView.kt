@@ -29,7 +29,7 @@ fun StateView(
 ) {
     Crossfade(targetState = uiModel, modifier = modifier, label = "") {
         when (it.state) {
-            BaseUiState.State.LOADING -> CircularLoadingIndicator()
+            BaseUiState.State.LOADING -> CircularLoadingIndicator(modifier = modifier, uiModel = uiModel, content = content)
             BaseUiState.State.ERROR -> ErrorView(message = it.errorMessage, retryAction = retryOnError)
             BaseUiState.State.SUCCESS -> content()
         }
@@ -37,14 +37,21 @@ fun StateView(
 }
 
 @Composable
-fun CircularLoadingIndicator() = Box(
-    contentAlignment = Alignment.Center,
-    modifier = Modifier.fillMaxSize()
+fun CircularLoadingIndicator(
+    modifier: Modifier,
+    uiModel: BaseUiState,
+    content: @Composable () -> Unit
 ) {
-    CircularProgressIndicator(
-        color = MaterialTheme.colors.primary,
-        modifier = Modifier.size(40.dp)
-    )
+    Box(
+        contentAlignment = Alignment.Center,
+        modifier = Modifier.fillMaxSize(),
+    ) {
+        content()
+        CircularProgressIndicator(
+            color = MaterialTheme.colors.primary,
+            modifier = Modifier.size(40.dp)
+        )
+    }
 }
 
 @Composable

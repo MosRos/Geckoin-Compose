@@ -11,8 +11,9 @@ import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.catch
 import kotlinx.coroutines.flow.flow
 import kotlinx.coroutines.flow.flowOn
+import timber.log.Timber
 
- fun <P : Any?, T : Any, R : Any> repositoryAdapter(
+fun <P : Any?, T : Any, R : Any> repositoryAdapter(
     request: P,
     networkRequest: suspend P.() -> Either<CoinGeckoApiError, T>,
     responseMapper: ((T) -> R)? = null,
@@ -24,7 +25,12 @@ import kotlinx.coroutines.flow.flowOn
 ): Flow<Result<R>> = flow {
     var lastRequestTime: Long = 0L
 
-    val cachedData: R? = dbReader?.invoke(request)
+    val cachedData: R? = try {
+        dbReader?.invoke(request)
+    } catch (e: Exception) {
+        Timber.e(e)
+        null
+    }
     if (cachedData != null) {
         emit(Result.Success(cachedData))
     }

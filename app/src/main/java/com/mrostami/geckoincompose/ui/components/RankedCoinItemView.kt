@@ -9,9 +9,8 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.unit.Dp
 import androidx.constraintlayout.compose.ConstraintLayout
-import coil.compose.AsyncImage
+import coil3.compose.AsyncImage
 import com.mrostami.geckoincompose.model.RankedCoin
-import com.mrostami.geckoincompose.model.TrendCoin
 import com.mrostami.geckoincompose.ui.theme.GeckoinTheme
 
 

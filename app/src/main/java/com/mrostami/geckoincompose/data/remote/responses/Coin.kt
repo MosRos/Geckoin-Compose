@@ -1,9 +1,14 @@
 package com.mrostami.geckoincompose.data.remote.responses
 
+import androidx.room.ColumnInfo
+import androidx.room.Entity
+import androidx.room.PrimaryKey
+import com.google.gson.annotations.Expose
 import com.mrostami.geckoincompose.model.RankedCoin
 import kotlinx.serialization.Serializable
 
 @Serializable
+@Entity
 data class Coin(
     val `24hVolume`: String,
     val btcPrice: String,
@@ -20,8 +25,10 @@ data class Coin(
     val rank: Int,
     val symbol: String,
     val tier: Int?,
-    val uuid: String,
-    val wrappedTo: String? = null
+    @PrimaryKey @ColumnInfo(name = "id") val uuid: String,
+    val wrappedTo: String? = null,
+    @Expose(serialize = false, deserialize = false)
+    var pageKey: Int? = null
 ) {
     companion object {
         fun toRankedEntity(rankCoin: Coin) : RankedCoin = RankedCoin(

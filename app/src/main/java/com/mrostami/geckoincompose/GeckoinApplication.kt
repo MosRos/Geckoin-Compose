@@ -9,21 +9,26 @@ import androidx.work.Constraints
 import androidx.work.NetworkType
 import androidx.work.OneTimeWorkRequestBuilder
 import androidx.work.WorkManager
-import coil.ImageLoader
-import coil.ImageLoaderFactory
-import coil.decode.GifDecoder
-import coil.decode.SvgDecoder
-import coil.disk.DiskCache
-import coil.memory.MemoryCache
+import coil3.ImageLoader
+import coil3.PlatformContext
+import coil3.SingletonImageLoader
+import coil3.disk.DiskCache
+import coil3.disk.directory
+import coil3.gif.GifDecoder
+import coil3.memory.MemoryCache
+import coil3.network.okhttp.OkHttpNetworkFetcherFactory
+import coil3.request.crossfade
+import coil3.svg.SvgDecoder
 import com.mrostami.geckoincompose.workers.SyncCoinsWorker
 import dagger.hilt.android.HiltAndroidApp
+import okhttp3.OkHttpClient
 import org.jetbrains.annotations.NonNls
 import timber.log.Timber
 import javax.inject.Inject
 
 
 @HiltAndroidApp
-class GeckoinApplication : Application(), Configuration.Provider, ImageLoaderFactory {
+class GeckoinApplication : Application(), Configuration.Provider, SingletonImageLoader.Factory {
 
     companion object {
         const val DEFAULT_THEME_MODE: Int = AppCompatDelegate.MODE_NIGHT_FOLLOW_SYSTEM
@@ -36,11 +41,11 @@ class GeckoinApplication : Application(), Configuration.Provider, ImageLoaderFac
         }
     }
 
-    override fun newImageLoader(): ImageLoader {
+    override fun newImageLoader(context: PlatformContext): ImageLoader {
         return ImageLoader.Builder(this)
             .memoryCache {
-                MemoryCache.Builder(this)
-                    .maxSizePercent(0.25)
+                MemoryCache.Builder()
+                    .maxSizePercent(context = this, percent = 0.25)
                     .build()
             }
             .diskCache {
@@ -52,27 +57,16 @@ class GeckoinApplication : Application(), Configuration.Provider, ImageLoaderFac
             .components {
                 add(SvgDecoder.Factory())
                 add(GifDecoder.Factory())
+                add(
+                    OkHttpNetworkFetcherFactory(
+                        callFactory = {
+                            OkHttpClient()
+                        }
+                    )
+                )
             }
             .crossfade(true)
             .build()
-    }
-
-    // workerFactory initialized in app Manifest with a provider
-    @Inject
-    lateinit var workerFactory: HiltWorkerFactory
-
-    override fun getWorkManagerConfiguration(): Configuration {
-        return if (BuildConfig.DEBUG) {
-            Configuration.Builder()
-                .setWorkerFactory(workerFactory)
-                .setMinimumLoggingLevel(Log.DEBUG)
-                .build()
-        } else {
-            Configuration.Builder()
-                .setMinimumLoggingLevel(Log.ERROR)
-                .setWorkerFactory(workerFactory)
-                .build()
-        }
     }
 
     override fun onCreate() {
@@ -85,6 +79,25 @@ class GeckoinApplication : Application(), Configuration.Provider, ImageLoaderFac
     fun getAppContext(): Application {
         return instance
     }
+
+    // workerFactory initialized in app Manifest with a provider
+    @Inject
+    lateinit var workerFactory: HiltWorkerFactory
+
+
+    override val workManagerConfiguration: Configuration
+        get() = if (BuildConfig.DEBUG) {
+            Configuration.Builder()
+                .setWorkerFactory(workerFactory)
+                .setMinimumLoggingLevel(Log.DEBUG)
+                .build()
+        } else {
+            Configuration.Builder()
+                .setMinimumLoggingLevel(Log.ERROR)
+                .setWorkerFactory(workerFactory)
+                .build()
+
+        }
 
     private fun initSyncWorker(context: Application) {
         val syncWorkConstraints = Constraints.Builder()

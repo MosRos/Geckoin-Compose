@@ -79,23 +79,27 @@ class RemoteDataSource @Inject constructor(
     }
 
     override suspend fun getPagedMarketRanks(
-        page: Int,
-        perPage: Int
+        offset: Int,
+        limit: Int
     ): Either<CoinGeckoApiError, List<RankedCoin>> {
         val url = COINSRANKINGS_BASE_URL + CoinGeckoService.COIN_RANKING_ENDPOINT
-        return coinGeckoKtorClient.get<CoinRankingsResponse>(url) {
-            method = HttpMethod.Get
-            parameter("offset", page)
-            parameter("limit", perPage)
+        return try {
+            coinGeckoKtorClient.get<CoinRankingsResponse>(url) {
+                method = HttpMethod.Get
+                parameter("offset", offset)
+                parameter("limit", limit)
 //            parameter("vs_currency", "usd")
-        }.map {
-            if (it.status == "success") {
-                it.data?.coins?.map { coin ->
-                    com.mrostami.geckoincompose.data.remote.responses.Coin.toRankedEntity(coin)
-                } ?: emptyList()
-            } else {
-                emptyList()
+            }.map {
+                if (it.status == "success") {
+                    it.data?.coins?.map { coin ->
+                        com.mrostami.geckoincompose.data.remote.responses.Coin.toRankedEntity(coin)
+                    } ?: emptyList()
+                } else {
+                    emptyList()
+                }
             }
+        } catch (e: Exception) {
+            Either.Left(CoinGeckoApiError())
         }
     }
 }

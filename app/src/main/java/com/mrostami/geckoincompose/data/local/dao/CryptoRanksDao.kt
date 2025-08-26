@@ -39,4 +39,7 @@ interface CryptoRanksDao {
 
     @Query("DELETE FROM RankedCoin")
     suspend fun deleteAllRankedCoins()
+
+    @Query("SELECT * FROM RankedCoin WHERE pageKey = :offset ORDER BY marketCapRank ASC LIMIT :limit")
+    suspend fun getRankedCoinsList(offset: Int, limit: Int): List<RankedCoin>
 }

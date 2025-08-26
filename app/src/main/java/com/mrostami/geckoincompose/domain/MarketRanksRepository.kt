@@ -1,5 +1,6 @@
 package com.mrostami.geckoincompose.domain
 
+import androidx.compose.ui.geometry.Offset
 import androidx.paging.PagingData
 import arrow.core.Either
 import com.mrostami.geckoin.data.remote.responses.CoinGeckoApiError
@@ -10,6 +11,6 @@ import kotlinx.coroutines.flow.flow
 
 interface MarketRanksRepository {
 
-    fun getAndCacheInitRanks(initSize: Int) : Flow<Result<Boolean>>
+    fun getCoinsList(offset: Int, limit: Int) : Flow<Result<List<RankedCoin>>>
     fun getRanks() : Flow<PagingData<RankedCoin>> = flow {  }
 }

@@ -1,13 +1,16 @@
 package com.mrostami.geckoincompose.model
 
+import android.os.Parcelable
 import androidx.room.ColumnInfo
 import androidx.room.Entity
 import androidx.room.Ignore
 import androidx.room.PrimaryKey
 import com.google.gson.annotations.Expose
 import com.google.gson.annotations.SerializedName
+import kotlinx.parcelize.Parcelize
 
 
+@Parcelize
 @Entity
 data class RankedCoin(
     @SerializedName("id")
@@ -60,5 +63,8 @@ data class RankedCoin(
     var totalSupply: Double? = null, // null
     @SerializedName("total_volume")
     var totalVolume: Double? = null, // 14969737842
-) {
+
+    @Expose(serialize = false, deserialize = false)
+    var pageKey: Int? = null
+) : Parcelable {
 }

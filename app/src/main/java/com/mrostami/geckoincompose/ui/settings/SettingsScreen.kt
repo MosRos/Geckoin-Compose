@@ -82,7 +82,7 @@ fun SettingsScreen(
                     .background(color = GeckoinTheme.colorScheme.background),
                 horizontalAlignment = Alignment.CenterHorizontally
             ) {
-                Spacer(modifier = modifier.size(80.dp))
+                Spacer(modifier = modifier.size(24.dp))
                 Image(
                     painter = painterResource(id = R.mipmap.ic_launcher_foreground), // painterResource(id = R.drawable.bitcoin_logo),
                     contentDescription = "app icon",
@@ -101,10 +101,10 @@ fun SettingsScreen(
                         .padding(top = 16.dp)
                         .align(Alignment.CenterHorizontally)
                 )
-                Spacer(modifier = modifier.size(110.dp))
+                Spacer(modifier = modifier.size(32.dp))
                 SettingsOptions(
                     modifier = Modifier
-                        .padding(top = 132.dp),
+                        .padding(top = 24.dp),
                     uiState = uiState.value
                 ) {
                     showThemeSelectBottomSheet.value = it
@@ -142,15 +142,19 @@ fun SettingsOptions(
             startIndent = 50.dp
         )
         SettingOptionItem(title = "About Developer", iconResId = R.drawable.ic_code) {
-            // TODO: open developer LinkedIn
-            openLinkInBrowser(context = mContext, url = "")
+            openLinkInBrowser(context = mContext, url = uiState.data.developerAddress)
         }
         Divider(
             thickness = 1.dp,
             color = GeckoinTheme.customColors.dividerColor,
             startIndent = 50.dp
         )
-        SettingOptionItem(title = "About", iconResId = R.drawable.ic_info)
+        SettingOptionItem(
+            title = "About",
+            iconResId = R.drawable.ic_info
+        ) {
+            openLinkInBrowser(context = mContext, url = uiState.data.aboutRepoAddress)
+        }
     }
 }
 

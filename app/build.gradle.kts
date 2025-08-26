@@ -6,6 +6,7 @@ plugins {
     alias(libs.plugins.kotlin.android)
     alias(libs.plugins.kotlin.parcelize)
     alias(libs.plugins.kotlin.serialization)
+    alias(libs.plugins.compose.compiler)
     alias(libs.plugins.kapt)
 //    alias(libs.plugins.ksp)
     alias(libs.plugins.hilt)
@@ -52,12 +53,12 @@ android {
     }
 
     compileOptions {
-        sourceCompatibility = JavaVersion.VERSION_17
-        targetCompatibility = JavaVersion.VERSION_17
+        sourceCompatibility = JavaVersion.VERSION_1_8
+        targetCompatibility = JavaVersion.VERSION_1_8
     }
 
     kotlinOptions {
-        jvmTarget = "17"
+        jvmTarget = "1.8"
     }
     buildFeatures {
         buildConfig = true
@@ -65,6 +66,10 @@ android {
     }
     composeOptions {
         kotlinCompilerExtensionVersion = libs.versions.compose.compiler.get()
+    }
+    composeCompiler {
+        reportsDestination = layout.buildDirectory.dir("compose_compiler")
+//        stabilityConfigurationFile = rootProject.layout.projectDirectory.file("stability_config.conf")
     }
     kapt {
         correctErrorTypes = false
@@ -97,6 +102,7 @@ android {
 dependencies {
 
     implementation(libs.kotlin.stdlib)
+    implementation(libs.kotlin.metadata.jvm)
 
     implementation(libs.androidx.core.ktx)
     implementation(libs.androidx.appcompat)
@@ -200,12 +206,12 @@ dependencies {
 
     // Coil Image loading
     implementation(libs.coil.coil)
+    implementation(libs.coil.network.okhttp)
     implementation(libs.coil.kt.compose)
     implementation(libs.coil.svg)
     implementation(libs.coil.gif)
 
     // Charts
-    implementation(libs.vico.core)
     implementation(libs.vico.compose)
     implementation(libs.vico.style.m3)
 //    implementation("com.github.PhilJay:MPAndroidChart:v3.1.0")

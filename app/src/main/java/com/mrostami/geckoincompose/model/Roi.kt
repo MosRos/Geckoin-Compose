@@ -1,8 +1,11 @@
 package com.mrostami.geckoincompose.model
 
+import android.os.Parcelable
+import kotlinx.parcelize.Parcelize
 import kotlinx.serialization.SerialName
 import kotlinx.serialization.Serializable
 
+@Parcelize
 @Serializable
 data class Roi(
     @SerialName("currency")
@@ -11,4 +14,4 @@ data class Roi(
     var percentage: Double? = null, // 2943.3353518814183
     @SerialName("times")
     var times: Double? = null // 29.433353518814183
-)
+) : Parcelable

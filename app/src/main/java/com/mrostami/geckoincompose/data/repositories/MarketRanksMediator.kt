@@ -35,7 +35,6 @@ class MarketRanksMediator @Inject constructor(
 
     override suspend fun initialize(): InitializeAction = InitializeAction.LAUNCH_INITIAL_REFRESH
 
-
     override suspend fun load(
         loadType: LoadType,
         state: PagingState<Int, RankedCoin>
@@ -71,8 +70,8 @@ class MarketRanksMediator @Inject constructor(
                 return MediatorResult.Error(Error("No internet connection!"))
             }
             val rankedCoins: List<RankedCoin> = remoteDataSource.getPagedMarketRanks(
-                page = page,
-                perPage = state.config.pageSize
+                offset = page,
+                limit = state.config.pageSize
             ).fold(
                 {
                     listOf()

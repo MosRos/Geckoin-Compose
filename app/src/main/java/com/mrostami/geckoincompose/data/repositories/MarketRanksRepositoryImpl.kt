@@ -14,8 +14,8 @@ import com.mrostami.geckoincompose.data.remote.RemoteDataSource
 import com.mrostami.geckoincompose.domain.MarketRanksRepository
 import com.mrostami.geckoincompose.domain.base.Result
 import com.mrostami.geckoincompose.model.RankedCoin
+import com.mrostami.geckoincompose.model.TrendCoin
 import kotlinx.coroutines.flow.Flow
-import kotlinx.coroutines.flow.flow
 import javax.inject.Inject
 
 
@@ -27,21 +27,27 @@ class MarketRanksRepositoryImpl @Inject constructor(
 ) : MarketRanksRepository {
 
 
-    override fun getAndCacheInitRanks(initSize: Int): Flow<Result<Boolean>> = flow {
-        emit(Result.Loading)
-        remoteDataSource.getPagedMarketRanks(page = 1, perPage = initSize).fold(
-            ifLeft = {
-                emit(Result.Error(Exception("Failed")))
-                     },
-            ifRight = {
-                saveRanks(it)
-                emit(Result.Success(true))
-            }
-        )
-    }
+    override fun getCoinsList(offset: Int, limit: Int): Flow<Result<List<RankedCoin>>> = repositoryAdapter(
+        request = null,
+        networkRequest = {
+            remoteDataSource.getPagedMarketRanks(offset = offset, limit = limit)
+        },
+        responseMapper = {
+            it
+        },
+        dbReader = {
+            localDataSource.getRankedCoinsList(offset = offset, limit = limit)
+        },
+        dbWriter = { coins ->
+            saveRanks(coins, offset)
+        },
+        forceRefresh = true,
+    )
 
-    private suspend fun saveRanks(coins: List<RankedCoin>) {
-        localDataSource.insertRankedCoins(coins)
+    private suspend fun saveRanks(coins: List<RankedCoin>, page: Int) {
+        localDataSource.insertRankedCoins(coins.map {
+            it.apply { pageKey = page }
+        })
     }
 
     @OptIn(ExperimentalPagingApi::class)
