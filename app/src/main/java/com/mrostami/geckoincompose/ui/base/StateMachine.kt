@@ -1,21 +1,18 @@
 package com.mrostami.geckoincompose.ui.base
 
 import com.mrostami.geckoincompose.BuildConfig
-import kotlinx.coroutines.CoroutineScope
-import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.SupervisorJob
-import kotlinx.coroutines.channels.Channel
-import kotlinx.coroutines.flow.Flow
+import kotlinx.coroutines.flow.MutableSharedFlow
 import kotlinx.coroutines.flow.MutableStateFlow
-import kotlinx.coroutines.flow.receiveAsFlow
+import kotlinx.coroutines.flow.SharedFlow
+import timber.log.Timber
 
 abstract class StateMachine<S : BaseUiState, E : BaseUiEvent, F: BaseUiEffect>(initialState: S) {
 
     var state: MutableStateFlow<S> = MutableStateFlow(initialState)
         private set
 
-    private var effectChannel: Channel<F> = Channel()
-    val effect: Flow<F> = effectChannel.receiveAsFlow()
+    var effects: MutableSharedFlow<F> = MutableSharedFlow()
+        private set
 
     // Time Capsule is optional, its useful for debugging
     val timeCapsule: TimeCapsule<S> = TimeTravelCapsule { storedState ->
@@ -30,7 +27,14 @@ abstract class StateMachine<S : BaseUiState, E : BaseUiEvent, F: BaseUiEffect>(i
         reduce(event, state.value)
     }
 
-    fun setState(newState: S) {
+    fun emitEffect(effect: F) {
+        val success = effects.tryEmit(effect)
+        if (BuildConfig.DEBUG && success) {
+            Timber.d("Effect emitted ${effect.toString()}")
+        }
+    }
+
+    fun updateState(newState: S) {
         val success = state.tryEmit(newState)
 
         if (BuildConfig.DEBUG && success) {
@@ -40,3 +44,43 @@ abstract class StateMachine<S : BaseUiState, E : BaseUiEvent, F: BaseUiEffect>(i
 
     abstract fun reduce(event: E, oldState: S)
 }
+
+//interface StateMachineInterface<S : BaseUiState, E : BaseUiEvent, F: BaseUiEffect> {
+//
+//    var initialState: S
+//
+//    val state: MutableStateFlow<S>
+//        get() = MutableStateFlow(initialState)
+//        private set
+//
+//    val effects: MutableSharedFlow<F>
+//        get() = MutableSharedFlow()
+//        private set
+//
+//    // Time Capsule is optional, its useful for debugging
+//    val timeCapsule: TimeCapsule<S>
+//        get() = TimeTravelCapsule { storedState ->
+//            state.tryEmit(storedState)
+//        }
+//
+//    fun sendEvent(event: E) {
+//        reduce(event, state.value)
+//    }
+//
+//    fun emitEffect(effect: F) {
+//        val success = effects.tryEmit(effect)
+//        if (BuildConfig.DEBUG && success) {
+//            Timber.d("Effect emitted ${effect.toString()}")
+//        }
+//    }
+//
+//    fun updateState(newState: S) {
+//        val success = state.tryEmit(newState)
+//
+//        if (BuildConfig.DEBUG && success) {
+//            timeCapsule.addState(newState)
+//        }
+//    }
+//
+//    fun reduce(event: E, oldState: S)
+//}

@@ -1,4 +1,4 @@
-package com.mrostami.geckoincompose.ui.home
+package com.mrostami.geckoincompose.ui.home.dominance_chart
 
 import androidx.compose.foundation.BorderStroke
 import androidx.compose.foundation.background
@@ -9,6 +9,7 @@ import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.material3.Surface
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
@@ -27,18 +28,24 @@ import com.mrostami.geckoincompose.model.GlobalMarketInfo
 import com.mrostami.geckoincompose.ui.components.PieChart
 import com.mrostami.geckoincompose.ui.components.StateView
 import com.mrostami.geckoincompose.ui.theme.GeckoinTheme
+import kotlinx.coroutines.delay
 import timber.log.Timber
 
 
 @Composable
 fun MarketDominanceWidget(
     modifier: Modifier = Modifier,
-    viewModel: MarketDominanceViewModel = hiltViewModel()
+    stateMachine: MarketDominanceStateMachine
 ) {
-    val uiState = viewModel.uiState.collectAsStateWithLifecycle()
+    val uiState = stateMachine.state.collectAsStateWithLifecycle()
+
+    LaunchedEffect(Unit) {
+        stateMachine.sendEvent(event = MarketDominanceEvents.RefreshData)
+    }
+
     StateView(
         uiModel = uiState.value,
-        retryOnError = { viewModel.onNewEvent(MarketDominanceEvents.RefreshData) }
+        retryOnError = { stateMachine.sendEvent(MarketDominanceEvents.RefreshData) }
     ) {
         Timber.e("Collected values: ${uiState.value}")
         ConstraintLayout(

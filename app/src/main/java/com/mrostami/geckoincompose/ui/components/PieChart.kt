@@ -148,7 +148,7 @@ fun PieChart(
             modifier = Modifier
                 .wrapContentWidth()
         ) {
-            floatValue.forEachIndexed { index, value ->
+            data.toList().forEachIndexed { index, value ->
                 Row(
                     modifier = Modifier.wrapContentWidth(),
                     verticalAlignment = Alignment.CenterVertically
@@ -161,15 +161,14 @@ fun PieChart(
                             .width(Dp(38f)),
                         contentAlignment = Alignment.Center
                     ) {
-                        data.toList().get(index).first
                         Text(
-                            text = Locale.getDefault().toString().uppercase(),
+                            text = value.first.toString().uppercase(),
                             color = Color.Black,
                             style = GeckoinTheme.typography.labelSmall
                         )
                     }
                     Text(
-                        text = " " + data.toList().get(index).second.round(decimals = 1).toString(),
+                        text = " " + value.second.round(decimals = 1).toString(),
                         color = GeckoinTheme.colorScheme.onBackground,
                         style = GeckoinTheme.typography.labelSmall
                     )

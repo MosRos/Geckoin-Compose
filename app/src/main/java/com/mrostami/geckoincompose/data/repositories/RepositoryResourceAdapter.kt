@@ -57,7 +57,7 @@ abstract class RepositoryResourceAdapter<in P : Any?, T : Any?, U : Any, V : Any
 
         if (shouldFetchFromApi() || forceRefresh) {
             if (NetworkUtils.isConnected()) {
-                emit(Result.Loading)
+//                emit(Result.Loading)
                 val apiResponse = getFromApi()
                 apiResponse.onRight {
                     persistData(it)

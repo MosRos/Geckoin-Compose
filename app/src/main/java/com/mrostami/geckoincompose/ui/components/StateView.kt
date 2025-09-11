@@ -30,7 +30,7 @@ fun StateView(
     Crossfade(targetState = uiModel, modifier = modifier, label = "") {
         when (it.state) {
             BaseUiState.State.LOADING -> CircularLoadingIndicator(modifier = modifier, uiModel = uiModel, content = content)
-            BaseUiState.State.ERROR -> ErrorView(message = it.errorMessage, retryAction = retryOnError)
+            BaseUiState.State.ERROR -> ErrorView(message = it.errorMessage, retryAction = retryOnError, content = content)
             BaseUiState.State.SUCCESS -> content()
         }
     }
@@ -57,11 +57,13 @@ fun CircularLoadingIndicator(
 @Composable
 fun ErrorView(
     message: String? = "Oops! An Error Occurred!",
-    retryAction: () -> Unit = {}
+    retryAction: () -> Unit = {},
+    content: @Composable () -> Unit
 ) = Box(
     contentAlignment = Alignment.Center,
     modifier = Modifier.fillMaxSize()
 ) {
+    content()
     Column(
         modifier = Modifier.fillMaxSize(),
         verticalArrangement = Arrangement.Center,

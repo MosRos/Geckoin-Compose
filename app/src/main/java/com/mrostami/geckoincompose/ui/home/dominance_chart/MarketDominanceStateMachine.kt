@@ -1,62 +1,61 @@
-package com.mrostami.geckoincompose.ui.home
+package com.mrostami.geckoincompose.ui.home.dominance_chart
 
 import androidx.compose.runtime.Immutable
-import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.mrostami.geckoincompose.domain.base.Result
 import com.mrostami.geckoincompose.domain.usecases.GlobalMarketInfoUseCase
 import com.mrostami.geckoincompose.model.GlobalMarketInfo
+import com.mrostami.geckoincompose.ui.base.BaseUiEffect
+import com.mrostami.geckoincompose.ui.base.BaseUiEvent
 import com.mrostami.geckoincompose.ui.base.BaseUiState
-import dagger.hilt.android.lifecycle.HiltViewModel
+import com.mrostami.geckoincompose.ui.base.StateMachine
+import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.channels.Channel
-import kotlinx.coroutines.flow.MutableStateFlow
-import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.collectLatest
 import kotlinx.coroutines.launch
 import timber.log.Timber
 import javax.inject.Inject
 
-@HiltViewModel
-class MarketDominanceViewModel @Inject constructor(
-    private val globalMarketInfoUseCase: GlobalMarketInfoUseCase
-) : ViewModel() {
+class MarketDominanceStateMachine @Inject constructor(
+    val globalMarketInfoUseCase: GlobalMarketInfoUseCase,
+    val coroutineScope: CoroutineScope
+) : StateMachine<DominanceUiState, MarketDominanceEvents, MarketDominanceEffects>(initialState = DominanceUiState.defaultInitState){
 
-    private var _uiState: MutableStateFlow<DominanceUiState> = MutableStateFlow(DominanceUiState.defaultInitState)
-    val uiState: StateFlow<DominanceUiState> = _uiState
 
-    var uiEffects: Channel<MarketDominanceEffects> = Channel()
-        private set
-
-    init {
-        getMarketDominanceInfo()
+    override fun reduce(event: MarketDominanceEvents, oldState: DominanceUiState) {
+        when(event) {
+            is MarketDominanceEvents.RefreshData -> {
+                getMarketDominanceInfo()
+            }
+        }
     }
+
     private fun getMarketDominanceInfo() {
-        viewModelScope.launch(Dispatchers.IO) {
+        coroutineScope.launch(Dispatchers.IO) {
             globalMarketInfoUseCase.invoke(forceRefresh = true).collectLatest { result ->
                 when(result) {
                     is Result.Success ->  {
                         Timber.e(result.data.toString())
-                        _uiState.emit(
+                        updateState(
                             DominanceUiState(
-                            data = result.data,
-                            state = BaseUiState.State.SUCCESS,
-                            errorMessage = null
+                                data = result.data,
+                                state = BaseUiState.State.SUCCESS,
+                                errorMessage = null
                             )
                         )
                     }
                     is Result.Error -> {
                         Timber.e(result.exception.toString())
-                        _uiState.emit(
+                        updateState(
                             DominanceUiState(
-                            state = BaseUiState.State.ERROR,
-                            errorMessage = (result as Result.Error).exception.message ?: "error"
+                                state = BaseUiState.State.ERROR,
+                                errorMessage = result.message ?: "error"
                             )
                         )
                     }
                     is Result.Loading -> {
                         Timber.e(result.toString())
-                        _uiState.emit(
+                        updateState(
                             DominanceUiState(
                                 state = BaseUiState.State.LOADING,
                                 errorMessage = null
@@ -67,25 +66,14 @@ class MarketDominanceViewModel @Inject constructor(
             }
         }
     }
-
-    fun onNewEvent(event: MarketDominanceEvents) {
-        reduce(event = event, oldState = uiState.value)
-    }
-    private fun reduce(event: MarketDominanceEvents, oldState: BaseUiState)  {
-        return when(event) {
-            is MarketDominanceEvents.RefreshData -> {
-                getMarketDominanceInfo()
-            }
-        }
-    }
 }
 
 
-sealed interface MarketDominanceEvents {
+sealed interface MarketDominanceEvents : BaseUiEvent {
     object RefreshData : MarketDominanceEvents
 }
 
-sealed interface MarketDominanceEffects {
+sealed interface MarketDominanceEffects : BaseUiEffect {
     object NoEffect : MarketDominanceEffects
 }
 
@@ -96,7 +84,7 @@ sealed interface MarketDominanceEffects {
 ) : BaseUiState {
     companion object {
         val defaultInitState = DominanceUiState(
-            state = BaseUiState.State.LOADING,
+            state = BaseUiState.State.SUCCESS,
             errorMessage = null
         )
     }

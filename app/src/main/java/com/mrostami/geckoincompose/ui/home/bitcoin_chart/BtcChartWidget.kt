@@ -12,6 +12,7 @@ import androidx.compose.material3.Icon
 import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
@@ -39,19 +40,24 @@ import com.mrostami.geckoincompose.ui.components.TenDaysLineChart
 import com.mrostami.geckoincompose.ui.theme.GeckoinTheme
 import com.mrostami.geckoincompose.utils.decimalFormat
 import com.mrostami.geckoincompose.utils.round
+import kotlinx.coroutines.delay
 import timber.log.Timber
 import kotlin.math.roundToLong
 
 @Composable
 fun BtcChartWidget(
     modifier: Modifier = Modifier,
-    viewModel: BtcInfoViewModel = hiltViewModel()
+    stateMachine: BtcInfoStateMachine
 ) {
-    val uiState = viewModel.uiState.collectAsStateWithLifecycle()
+    val uiState = stateMachine.state.collectAsStateWithLifecycle()
+
+    LaunchedEffect(Unit) {
+        stateMachine.sendEvent(BtcInfoEvents.RefreshData)
+    }
 
     StateView(
         uiModel = uiState.value,
-        retryOnError = { viewModel.onNewEvent(BtcInfoEvents.RefreshData) }
+        retryOnError = { stateMachine.sendEvent(BtcInfoEvents.RefreshData) }
     ) {
         Timber.e("Collected values: ${uiState.value}")
         ConstraintLayout(
@@ -103,6 +109,7 @@ fun BtcBasicInfoView(
     btcPriceInfo: BitcoinPriceInfo,
     modifier: Modifier = Modifier
 ) {
+    if (btcPriceInfo.info.usd == null || btcPriceInfo.info.usd == 0.0) return
     ConstraintLayout (
         modifier = modifier.fillMaxWidth()
     ) {

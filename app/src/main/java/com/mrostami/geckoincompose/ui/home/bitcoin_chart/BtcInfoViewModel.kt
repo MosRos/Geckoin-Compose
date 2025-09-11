@@ -21,55 +21,27 @@ class BtcInfoViewModel @Inject constructor(
     private val btcPriceUseCase: BitcoinSimplePriceUseCase,
 ) : ViewModel() {
 
-    private val btcInfoStateMachine = BtcInfoStateMachine(
-        initState = BtcInfoUiState.defaultInitState,
-        coroutineScope = viewModelScope,
-        btcChartInfoUseCase = btcChartInfoUseCase,
-        btcPriceUseCase = btcPriceUseCase
-    )
-
-    val uiState: StateFlow<BtcInfoUiState>
-        get() = btcInfoStateMachine.state
-
-    val uiEffects: Flow<BtcInfoEffects>
-        get() = btcInfoStateMachine.effect
-
-    init {
-        btcInfoStateMachine.sendEvent(event = BtcInfoEvents.RefreshData)
-    }
-
-    fun onNewEvent(events: BtcInfoEvents) {
-        btcInfoStateMachine.sendEvent(events)
-    }
-
-}
-
-data class BtcUiInfo(
-    val btcPriceInfo: BitcoinPriceInfo,
-    val btcChartInfo: List<PriceEntry>
-)
-@Immutable
-data class BtcInfoUiState(
-    override val state: BaseUiState.State,
-    override val errorMessage: String?,
-    override val data: BtcUiInfo
-) : BaseUiState {
-    companion object {
-        val defaultInitState = BtcInfoUiState(
-            state = BaseUiState.State.LOADING,
-            errorMessage = null,
-            data = BtcUiInfo(
-                btcPriceInfo = BitcoinPriceInfo(),
-                btcChartInfo = listOf()
-            )
+    val btcInfoStateMachine by lazy {
+        BtcInfoStateMachine(
+            initState = BtcInfoUiState.defaultInitState,
+            coroutineScope = viewModelScope,
+            btcChartInfoUseCase = btcChartInfoUseCase,
+            btcPriceUseCase = btcPriceUseCase
         )
     }
-}
 
-sealed interface BtcInfoEffects : BaseUiEffect {
-    object NoEffect : BtcInfoEffects
-}
+//    val uiState: StateFlow<BtcInfoUiState>
+//        get() = btcInfoStateMachine.state
+//
+//    val uiEffects: Flow<BtcInfoEffects>
+//        get() = btcInfoStateMachine.effects
 
-sealed interface BtcInfoEvents : BaseUiEvent {
-    object RefreshData : BtcInfoEvents
+    init {
+//        btcInfoStateMachine.sendEvent(event = BtcInfoEvents.RefreshData)
+    }
+
+//    fun onNewEvent(events: BtcInfoEvents) {
+//        btcInfoStateMachine.sendEvent(events)
+//    }
+
 }

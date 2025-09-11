@@ -15,8 +15,10 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.Dp
+import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.navigation.NavController
 import com.mrostami.geckoincompose.ui.home.bitcoin_chart.BtcChartWidget
+import com.mrostami.geckoincompose.ui.home.dominance_chart.MarketDominanceWidget
 import com.mrostami.geckoincompose.ui.home.trend_coins.TrendCoinsWidget
 import com.mrostami.geckoincompose.ui.navigation.MainTopBar
 import com.mrostami.geckoincompose.ui.theme.GeckoinTheme
@@ -25,7 +27,8 @@ import com.mrostami.geckoincompose.ui.theme.GeckoinTheme
 fun HomeScreen(
     modifier: Modifier,
     title: String,
-    navController: NavController
+    navController: NavController,
+    viewModel: HomeViewModel = hiltViewModel()
 ) {
     Scaffold(
         modifier = modifier
@@ -49,11 +52,11 @@ fun HomeScreen(
                     .verticalScroll(rememberScrollState())
             ) {
                 Spacer(modifier = Modifier.size(Dp(16f)))
-                BtcChartWidget()
+                BtcChartWidget(stateMachine = viewModel.btcInfoStateMachine)
                 Spacer(modifier = Modifier.size(Dp(8f)))
-                MarketDominanceWidget()
+                MarketDominanceWidget(stateMachine = viewModel.marketDominanceStateMachine)
                 Spacer(modifier = Modifier.size(Dp(8f)))
-                TrendCoinsWidget()
+                TrendCoinsWidget(stateMachine = viewModel.trendCoinsStateMachine)
                 Spacer(modifier = Modifier.size(Dp(58f)))
             }
         }

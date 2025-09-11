@@ -6,6 +6,9 @@ import com.mrostami.geckoincompose.domain.base.succeeded
 import com.mrostami.geckoincompose.domain.usecases.BitcoinChartInfoUseCase
 import com.mrostami.geckoincompose.domain.usecases.BitcoinSimplePriceUseCase
 import com.mrostami.geckoincompose.model.BitcoinPriceInfo
+import com.mrostami.geckoincompose.model.PriceEntry
+import com.mrostami.geckoincompose.ui.base.BaseUiEffect
+import com.mrostami.geckoincompose.ui.base.BaseUiEvent
 import com.mrostami.geckoincompose.ui.base.BaseUiState
 import com.mrostami.geckoincompose.ui.base.StateMachine
 import kotlinx.coroutines.CoroutineScope
@@ -14,6 +17,7 @@ import kotlinx.coroutines.async
 import kotlinx.coroutines.flow.collectLatest
 import kotlinx.coroutines.flow.combine
 import kotlinx.coroutines.launch
+import javax.annotation.concurrent.Immutable
 import javax.inject.Inject
 
 class BtcInfoStateMachine @Inject constructor(
@@ -67,9 +71,39 @@ class BtcInfoStateMachine @Inject constructor(
                 }
 
             }.collectLatest { result ->
-                setState(result)
+                updateState(result)
             }
 
         }
     }
+}
+
+data class BtcUiInfo(
+    val btcPriceInfo: BitcoinPriceInfo,
+    val btcChartInfo: List<PriceEntry>
+)
+@Immutable
+data class BtcInfoUiState(
+    override val state: BaseUiState.State,
+    override val errorMessage: String?,
+    override val data: BtcUiInfo
+) : BaseUiState {
+    companion object {
+        val defaultInitState = BtcInfoUiState(
+            state = BaseUiState.State.SUCCESS,
+            errorMessage = null,
+            data = BtcUiInfo(
+                btcPriceInfo = BitcoinPriceInfo(),
+                btcChartInfo = listOf()
+            )
+        )
+    }
+}
+
+sealed interface BtcInfoEffects : BaseUiEffect {
+    object NoEffect : BtcInfoEffects
+}
+
+sealed interface BtcInfoEvents : BaseUiEvent {
+    object RefreshData : BtcInfoEvents
 }
