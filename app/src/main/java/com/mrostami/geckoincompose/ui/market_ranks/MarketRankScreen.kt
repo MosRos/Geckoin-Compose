@@ -1,13 +1,11 @@
 package com.mrostami.geckoincompose.ui.market_ranks
 
-import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.LazyListState
-import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.lazy.itemsIndexed
 import androidx.compose.foundation.lazy.rememberLazyListState
 import androidx.compose.material.CircularProgressIndicator
@@ -28,10 +26,6 @@ import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import androidx.navigation.NavController
-import androidx.paging.LoadState
-import androidx.paging.compose.LazyPagingItems
-import androidx.paging.compose.collectAsLazyPagingItems
-import androidx.paging.compose.itemKey
 import com.mrostami.geckoincompose.model.RankedCoin
 import com.mrostami.geckoincompose.ui.base.BaseUiState
 import com.mrostami.geckoincompose.ui.components.RankedCoinItemView
@@ -39,7 +33,6 @@ import com.mrostami.geckoincompose.ui.navigation.MainTopBar
 import com.mrostami.geckoincompose.ui.theme.GeckoinTheme
 import kotlinx.coroutines.flow.distinctUntilChanged
 import kotlinx.coroutines.flow.filter
-import kotlinx.coroutines.launch
 
 @Composable
 fun MarketRankScreen(
@@ -91,7 +84,8 @@ fun RnaksListView(
             // Get the total number of items in the list
             val totalItemsCount = listState.layoutInfo.totalItemsCount
             // Get the index of the last visible item
-            val lastVisibleItemIndex = listState.layoutInfo.visibleItemsInfo.lastOrNull()?.index ?: 0
+            val lastVisibleItemIndex =
+                listState.layoutInfo.visibleItemsInfo.lastOrNull()?.index ?: 0
             // Check if we have scrolled near the end of the list and more items should be loaded
             lastVisibleItemIndex >= (totalItemsCount - buffer) && !isLoading
         }
@@ -108,10 +102,10 @@ fun RnaksListView(
     }
 
     LazyColumn(
-        modifier = modifier.background(color = GeckoinTheme.colorScheme.background),
+        modifier = modifier,
         state = listState
     ) {
-        itemsIndexed (
+        itemsIndexed(
             items = coinsList,
             key = { index, item -> item.id }
         ) { index, item ->

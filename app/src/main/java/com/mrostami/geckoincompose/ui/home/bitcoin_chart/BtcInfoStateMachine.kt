@@ -25,8 +25,7 @@ class BtcInfoStateMachine @Inject constructor(
     val coroutineScope: CoroutineScope,
     val btcChartInfoUseCase: BitcoinChartInfoUseCase,
     val btcPriceUseCase: BitcoinSimplePriceUseCase
-) :
-    StateMachine<BtcInfoUiState, BtcInfoEvents, BtcInfoEffects>(initialState = initState) {
+) : StateMachine<BtcInfoUiState, BtcInfoEvents, BtcInfoEffects>(initialState = initState) {
 
     override fun reduce(event: BtcInfoEvents, oldState: BtcInfoUiState) {
         when (event) {
@@ -40,12 +39,12 @@ class BtcInfoStateMachine @Inject constructor(
         coroutineScope.launch(Dispatchers.IO) {
             val priceJob = async {
                 btcPriceUseCase.invoke(forceRefresh = false)
-            }.await()
+            }
             val chartJob = async {
                 btcChartInfoUseCase.invoke(forceRefresh = false)
-            }.await()
+            }
 
-            priceJob.combine(chartJob) { priceInfo, chartInfo ->
+            priceJob.await().combine(chartJob.await()) { priceInfo, chartInfo ->
                 if (priceInfo.succeeded && chartInfo.succeeded) {
                     BtcInfoUiState(
                         state = BaseUiState.State.SUCCESS,
@@ -82,6 +81,7 @@ data class BtcUiInfo(
     val btcPriceInfo: BitcoinPriceInfo,
     val btcChartInfo: List<PriceEntry>
 )
+
 @Immutable
 data class BtcInfoUiState(
     override val state: BaseUiState.State,
@@ -90,7 +90,7 @@ data class BtcInfoUiState(
 ) : BaseUiState {
     companion object {
         val defaultInitState = BtcInfoUiState(
-            state = BaseUiState.State.SUCCESS,
+            state = BaseUiState.State.LOADING,
             errorMessage = null,
             data = BtcUiInfo(
                 btcPriceInfo = BitcoinPriceInfo(),

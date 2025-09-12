@@ -21,7 +21,7 @@ class HomeViewModel @Inject constructor(
     private val bitcoinChartInfoUseCase: BitcoinChartInfoUseCase
 ) : ViewModel() {
 
-    val btcInfoStateMachine by lazy {
+    val btcInfoStateMachine by  lazy {
         BtcInfoStateMachine(
             initState = BtcInfoUiState.defaultInitState,
             coroutineScope = viewModelScope,
@@ -29,6 +29,7 @@ class HomeViewModel @Inject constructor(
             btcPriceUseCase = bitcoinSimplePriceUseCase
         )
     }
+
 
     val marketDominanceStateMachine: MarketDominanceStateMachine by lazy {
         MarketDominanceStateMachine(

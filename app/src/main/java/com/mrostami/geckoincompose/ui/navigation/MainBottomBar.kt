@@ -138,7 +138,7 @@ fun MainTopBar(
         exit = fadeOut()
     ) {
         TopAppBar(
-            modifier = Modifier.navigationBarsPadding(),
+            modifier = Modifier.fillMaxWidth(),
             title = {
                 Box(
                     modifier = Modifier

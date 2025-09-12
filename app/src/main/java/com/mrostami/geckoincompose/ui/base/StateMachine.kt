@@ -3,7 +3,6 @@ package com.mrostami.geckoincompose.ui.base
 import com.mrostami.geckoincompose.BuildConfig
 import kotlinx.coroutines.flow.MutableSharedFlow
 import kotlinx.coroutines.flow.MutableStateFlow
-import kotlinx.coroutines.flow.SharedFlow
 import timber.log.Timber
 
 abstract class StateMachine<S : BaseUiState, E : BaseUiEvent, F: BaseUiEffect>(initialState: S) {

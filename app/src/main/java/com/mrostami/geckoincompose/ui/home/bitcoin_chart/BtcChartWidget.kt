@@ -4,6 +4,7 @@ import androidx.compose.foundation.BorderStroke
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.aspectRatio
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
@@ -13,51 +14,43 @@ import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
-import androidx.compose.runtime.getValue
-import androidx.compose.runtime.mutableStateOf
-import androidx.compose.runtime.remember
-import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.painter.Painter
 import androidx.compose.ui.layout.ContentScale
-import androidx.compose.ui.layout.onSizeChanged
-import androidx.compose.ui.platform.LocalDensity
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.unit.Dp
-import androidx.compose.ui.unit.DpSize
 import androidx.constraintlayout.compose.ConstraintLayout
-import androidx.constraintlayout.compose.Dimension
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import coil3.compose.AsyncImage
 import com.mrostami.geckoincompose.R
 import com.mrostami.geckoincompose.model.BitcoinPriceInfo
+import com.mrostami.geckoincompose.ui.components.AnimatedLineChart
 import com.mrostami.geckoincompose.ui.components.StateView
-import com.mrostami.geckoincompose.ui.components.TenDaysLineChart
 import com.mrostami.geckoincompose.ui.theme.GeckoinTheme
 import com.mrostami.geckoincompose.utils.decimalFormat
 import com.mrostami.geckoincompose.utils.round
-import kotlinx.coroutines.delay
 import timber.log.Timber
 import kotlin.math.roundToLong
 
 @Composable
 fun BtcChartWidget(
     modifier: Modifier = Modifier,
-    stateMachine: BtcInfoStateMachine
+    viewModel: BtcInfoViewModel = hiltViewModel<BtcInfoViewModel>()
+//    stateMachine: BtcInfoStateMachine
 ) {
-    val uiState = stateMachine.state.collectAsStateWithLifecycle()
+    val uiState = viewModel.uiState.collectAsStateWithLifecycle()
 
     LaunchedEffect(Unit) {
-        stateMachine.sendEvent(BtcInfoEvents.RefreshData)
+        viewModel.sendEvent(BtcInfoEvents.RefreshData)
     }
 
     StateView(
         uiModel = uiState.value,
-        retryOnError = { stateMachine.sendEvent(BtcInfoEvents.RefreshData) }
+        retryOnError = { viewModel.sendEvent(BtcInfoEvents.RefreshData) }
     ) {
         Timber.e("Collected values: ${uiState.value}")
         ConstraintLayout(
@@ -66,10 +59,6 @@ fun BtcChartWidget(
                 .padding(Dp(12f))
         ) {
             val (card, surface) = createRefs()
-            var heightInDp by remember {
-                mutableStateOf(DpSize.Zero)
-            }
-            val density = LocalDensity.current
             Surface(
                 shape = GeckoinTheme.shapes.large,
                 tonalElevation = Dp(1f),
@@ -79,16 +68,8 @@ fun BtcChartWidget(
                     .constrainAs(surface) {
                         linkTo(start = parent.start, end = parent.end)
                         linkTo(top = parent.top, bottom = parent.bottom)
-                        width = Dimension.ratio("4:3")
-                        height = Dimension.fillToConstraints
-                    }
-                    .onSizeChanged {
-                        heightInDp = density.run {
-                            DpSize(
-                                it.width.toDp(),
-                                it.height.toDp()
-                            )
-                        }
+//                        width = Dimension.ratio("4:3")
+//                        height = Dimension.fillToConstraints
                     }
             ) {
                 Column(
@@ -96,8 +77,22 @@ fun BtcChartWidget(
                     horizontalAlignment = Alignment.CenterHorizontally,
                     modifier = Modifier.background(color = GeckoinTheme.colorScheme.surface)
                 ) {
+//                    BtcBasicInfoView(btcPriceInfo = uiState.value.data.btcPriceInfo)
+//                    TenDaysLineChart(rawData = uiState.value.data.btcChartInfo)
+//
+//                    Spacer(modifier = Modifier.height(60.dp))
+
                     BtcBasicInfoView(btcPriceInfo = uiState.value.data.btcPriceInfo)
-                    TenDaysLineChart(rawData = uiState.value.data.btcChartInfo)
+                    AnimatedLineChart(
+                        modifier = Modifier
+                            .fillMaxWidth()
+                            .aspectRatio(4 / 3f),
+                        data = uiState.value.data.btcChartInfo,
+                        lineColor = Color(0xFFCB8621), // Example iOS blue
+                        dotColor = Color(0xFFCB8621),
+                        gradientStartColor = Color(0xFFCB8621).copy(alpha = 0.6f),
+                        gradientEndColor = Color.Transparent
+                    )
                 }
             }
         }
@@ -110,7 +105,7 @@ fun BtcBasicInfoView(
     modifier: Modifier = Modifier
 ) {
     if (btcPriceInfo.info.usd == null || btcPriceInfo.info.usd == 0.0) return
-    ConstraintLayout (
+    ConstraintLayout(
         modifier = modifier.fillMaxWidth()
     ) {
         val (image, title, price, vol, cap, change, changIcon) = createRefs()
@@ -122,7 +117,7 @@ fun BtcBasicInfoView(
                 .size(Dp(40f))
                 .clip(CircleShape)
                 .constrainAs(image) {
-                    start.linkTo(parent.start,  Dp(12f))
+                    start.linkTo(parent.start, Dp(12f))
                     top.linkTo(parent.top, Dp(12f))
                 }
         )
@@ -133,7 +128,7 @@ fun BtcBasicInfoView(
             modifier = Modifier.constrainAs(title) {
                 start.linkTo(image.end, Dp(8f))
                 top.linkTo(parent.top, Dp(8f))
-            } 
+            }
         )
         Text(
             text = "$ " + (btcPriceInfo.info.usd?.round(decimals = 0) ?: 0),
@@ -170,7 +165,8 @@ fun BtcBasicInfoView(
         }
 
         Text(
-            text = "vol: " + (btcPriceInfo.info.usd24hVol?.roundToLong()?.decimalFormat() ?: 0.0).toString(),
+            text = "vol: " + (btcPriceInfo.info.usd24hVol?.roundToLong()?.decimalFormat()
+                ?: 0.0).toString(),
             style = GeckoinTheme.typography.bodyMedium,
             color = GeckoinTheme.customColors.textSecondary,
             modifier = Modifier.constrainAs(vol) {
@@ -180,7 +176,8 @@ fun BtcBasicInfoView(
         )
 
         Text(
-            text = "cap: " + (btcPriceInfo.info.usdMarketCap?.roundToLong()?.decimalFormat() ?: 0.0).toString(),
+            text = "cap: " + (btcPriceInfo.info.usdMarketCap?.roundToLong()?.decimalFormat()
+                ?: 0.0).toString(),
             style = GeckoinTheme.typography.bodyMedium,
             color = GeckoinTheme.customColors.textSecondary,
             modifier = Modifier.constrainAs(cap) {
@@ -193,19 +190,21 @@ fun BtcBasicInfoView(
 }
 
 @Composable
-fun getUpOrDownColor(btcPriceInfo: BitcoinPriceInfo) : Color {
+fun getUpOrDownColor(btcPriceInfo: BitcoinPriceInfo): Color {
     if (btcPriceInfo.info.usd24hChange == null) return GeckoinTheme.customColors.dividerColor
     val change: Double = btcPriceInfo.info.usd24hChange ?: 0.0
     return when {
         change == 0.0 -> GeckoinTheme.customColors.dividerColor
         change > 0 -> GeckoinTheme.customColors.upGreen
         change < 0 -> GeckoinTheme.customColors.downRed
-        else -> { GeckoinTheme.customColors.dividerColor }
+        else -> {
+            GeckoinTheme.customColors.dividerColor
+        }
     }
 }
 
 @Composable
-fun getUpOrDownPainterResource(btcPriceInfo: BitcoinPriceInfo) : Painter? {
+fun getUpOrDownPainterResource(btcPriceInfo: BitcoinPriceInfo): Painter? {
     if (btcPriceInfo.info.usd24hChange == null) return null
     val change: Double = btcPriceInfo.info.usd24hChange ?: 0.0
     return when {

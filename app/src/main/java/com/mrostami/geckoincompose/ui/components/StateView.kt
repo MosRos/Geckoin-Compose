@@ -44,7 +44,7 @@ fun CircularLoadingIndicator(
 ) {
     Box(
         contentAlignment = Alignment.Center,
-        modifier = Modifier.fillMaxSize(),
+        modifier = modifier.fillMaxSize(),
     ) {
         content()
         CircularProgressIndicator(

@@ -3,13 +3,9 @@ package com.mrostami.geckoincompose.ui.home.trend_coins
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.mrostami.geckoincompose.domain.usecases.TrendCoinsUseCase
-import com.mrostami.geckoincompose.model.TrendCoin
-import com.mrostami.geckoincompose.ui.base.BaseUiEffect
-import com.mrostami.geckoincompose.ui.base.BaseUiEvent
-import com.mrostami.geckoincompose.ui.base.BaseUiState
-import com.mrostami.geckoincompose.ui.base.StateMachine
 import dagger.hilt.android.lifecycle.HiltViewModel
-import javax.annotation.concurrent.Immutable
+import kotlinx.coroutines.flow.Flow
+import kotlinx.coroutines.flow.StateFlow
 import javax.inject.Inject
 
 @HiltViewModel
@@ -22,5 +18,21 @@ class TrendCoinsViewModel @Inject constructor(
             scope = viewModelScope
         )
     }
+
+
+    val uiState: StateFlow<TrendCoinsUiState>
+        get() = trendCoinsStateMachine.state
+
+    val uiEffects: Flow<TrendCoinsEffects>
+        get() = trendCoinsStateMachine.effects
+
+    init {
+//        trendCoinsStateMachine.sendEvent(event = TrendCoinsEvents.RefreshData)
+    }
+
+    fun sendEvent(event: TrendCoinsEvents) {
+        trendCoinsStateMachine.sendEvent(event)
+    }
+
 }
 

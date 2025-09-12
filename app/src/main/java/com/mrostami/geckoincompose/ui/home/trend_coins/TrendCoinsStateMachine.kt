@@ -36,7 +36,7 @@ class TrendCoinsStateMachine @Inject constructor(
                             state.value.copy(
                                 state = BaseUiState.State.SUCCESS,
                                 errorMessage = null,
-                                data = result.data
+                                data = result.data.take(11)
                             )
                         )
                     }

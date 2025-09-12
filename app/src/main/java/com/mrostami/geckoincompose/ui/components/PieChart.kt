@@ -5,20 +5,18 @@ import androidx.compose.animation.core.animateFloatAsState
 import androidx.compose.animation.core.tween
 import androidx.compose.foundation.Canvas
 import androidx.compose.foundation.background
-import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
+import androidx.compose.foundation.layout.BoxWithConstraints
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
+import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
-import androidx.compose.foundation.layout.height
-import androidx.compose.foundation.layout.offset
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.layout.wrapContentHeight
 import androidx.compose.foundation.layout.wrapContentWidth
-import androidx.compose.material3.LocalContentColor
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
@@ -30,37 +28,21 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.rotate
 import androidx.compose.ui.geometry.Offset
-import androidx.compose.ui.graphics.BlendMode
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.StrokeCap
 import androidx.compose.ui.graphics.drawscope.Stroke
-import androidx.compose.ui.platform.LocalFontFamilyResolver
-import androidx.compose.ui.text.AnnotatedString
-import androidx.compose.ui.text.MultiParagraph
-import androidx.compose.ui.text.MultiParagraphIntrinsics
-import androidx.compose.ui.text.TextLayoutInput
-import androidx.compose.ui.text.TextLayoutResult
-import androidx.compose.ui.text.TextStyle
-import androidx.compose.ui.text.drawText
-import androidx.compose.ui.text.style.TextOverflow
-import androidx.compose.ui.text.toUpperCase
-import androidx.compose.ui.unit.Constraints
-import androidx.compose.ui.unit.Density
 import androidx.compose.ui.unit.Dp
-import androidx.compose.ui.unit.LayoutDirection
-import androidx.compose.ui.unit.TextUnit
+import androidx.compose.ui.unit.dp
+import androidx.compose.ui.unit.min
 import com.mrostami.geckoincompose.ui.theme.GeckoinTheme
 import com.mrostami.geckoincompose.utils.round
-import java.util.Locale
-import kotlin.math.cos
-import kotlin.math.sin
 
 @Composable
 fun PieChart(
     data: Map<String, Double>,
-    radiusOuter: Dp = Dp(140f),
+    radiusOuter: Dp = Dp(340f),
     chartBarWidth: Dp = Dp(20f),
-    animDuration: Int = 1000,
+    animDuration: Int = 700,
     modifier: Modifier = Modifier
 ) {
 
@@ -127,7 +109,7 @@ fun PieChart(
         targetValue = if (animationPlayed) 90f * 3f else 0f,
         animationSpec = tween(
             durationMillis = animDuration,
-            delayMillis = 0,
+            delayMillis = 600,
             easing = LinearOutSlowInEasing
         ), label = ""
     )
@@ -139,9 +121,8 @@ fun PieChart(
 
     Row(
         modifier = Modifier
-            .fillMaxWidth()
-            .padding(Dp(12f))
-        ,
+            .fillMaxSize()
+            .padding(Dp(12f)),
         verticalAlignment = Alignment.CenterVertically,
     ) {
         Column(
@@ -175,15 +156,17 @@ fun PieChart(
                 }
             }
         }
-        Spacer(modifier = Modifier.width(Dp(40f)))
+        Spacer(modifier = Modifier.width(16.dp))
         // Pie Chart using Canvas Arc
-        Box(
-            modifier = Modifier.size(radiusOuter*2f),
+        BoxWithConstraints(
+            modifier = Modifier.fillMaxWidth(),
             contentAlignment = Alignment.Center
         ) {
+            val pieChartSize = min(maxWidth, radiusOuter)
             Canvas(
                 modifier = Modifier
-                    .size(radiusOuter * 2f)
+                    .size(pieChartSize)
+                    .padding(24.dp)
                     .rotate(animateRotation)
             ) {
                 // draw each Arc for each data entry in Pie Chart

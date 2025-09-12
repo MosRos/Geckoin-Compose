@@ -4,90 +4,74 @@ import androidx.compose.foundation.BorderStroke
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.aspectRatio
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.material3.Surface
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
-import androidx.compose.runtime.getValue
-import androidx.compose.runtime.mutableStateOf
-import androidx.compose.runtime.remember
-import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.layout.onSizeChanged
-import androidx.compose.ui.platform.LocalDensity
 import androidx.compose.ui.unit.Dp
-import androidx.compose.ui.unit.DpSize
 import androidx.constraintlayout.compose.ConstraintLayout
-import androidx.constraintlayout.compose.Dimension
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import com.mrostami.geckoincompose.model.GlobalMarketInfo
 import com.mrostami.geckoincompose.ui.components.PieChart
 import com.mrostami.geckoincompose.ui.components.StateView
 import com.mrostami.geckoincompose.ui.theme.GeckoinTheme
-import kotlinx.coroutines.delay
 import timber.log.Timber
 
 
 @Composable
 fun MarketDominanceWidget(
     modifier: Modifier = Modifier,
-    stateMachine: MarketDominanceStateMachine
+    viewModel: MarketDominanceViewModel = hiltViewModel()
+//    stateMachine: MarketDominanceStateMachine
 ) {
-    val uiState = stateMachine.state.collectAsStateWithLifecycle()
+    val uiState = viewModel.uiState.collectAsStateWithLifecycle()
 
     LaunchedEffect(Unit) {
-        stateMachine.sendEvent(event = MarketDominanceEvents.RefreshData)
+        viewModel.sendEvent(event = MarketDominanceEvents.RefreshData)
     }
 
     StateView(
         uiModel = uiState.value,
-        retryOnError = { stateMachine.sendEvent(MarketDominanceEvents.RefreshData) }
+        retryOnError = { viewModel.sendEvent(MarketDominanceEvents.RefreshData) }
     ) {
         Timber.e("Collected values: ${uiState.value}")
         ConstraintLayout(
             modifier = modifier
                 .fillMaxWidth()
+                .aspectRatio(5 / 4f)
                 .padding(Dp(12f))
         ) {
             val (card, surface) = createRefs()
-            var heightInDp by remember {
-                mutableStateOf(DpSize.Zero)
-            }
-            val density = LocalDensity.current
             Surface(
                 shape = GeckoinTheme.shapes.large,
                 tonalElevation = Dp(1f),
                 shadowElevation = Dp(0f),
                 border = BorderStroke(width = Dp(1f), color = GeckoinTheme.colorScheme.outline),
                 modifier = Modifier
+                    .fillMaxSize()
                     .constrainAs(surface) {
                         linkTo(start = parent.start, end = parent.end)
                         linkTo(top = parent.top, bottom = parent.bottom)
-                        width = Dimension.ratio("4:3")
-                        height = Dimension.fillToConstraints
-                    }.onSizeChanged {
-                        heightInDp = density.run {
-                            DpSize(
-                                it.width.toDp(),
-                                it.height.toDp()
-                            )
-                        }
                     }
             ) {
                 Column(
                     verticalArrangement = Arrangement.Center,
                     horizontalAlignment = Alignment.CenterHorizontally,
-                    modifier = Modifier.background(color = GeckoinTheme.colorScheme.surface)
+                    modifier = Modifier
+                        .background(color = GeckoinTheme.colorScheme.surface)
+                        .fillMaxWidth()
                 ) {
                     DominanceChart(
                         globalMarketInfo = uiState.value.data,
-                        boxHeight = heightInDp.height,
                         modifier = Modifier
                             .fillMaxSize()
+                            .aspectRatio(5 / 4f)
                     )
                 }
             }
@@ -98,7 +82,6 @@ fun MarketDominanceWidget(
 @Composable
 fun DominanceChart(
     globalMarketInfo: GlobalMarketInfo,
-    boxHeight: Dp,
     modifier: Modifier = Modifier
 ) {
     val caps: MutableMap<String, Double> = mutableMapOf()
@@ -107,7 +90,6 @@ fun DominanceChart(
     }
     PieChart(
         data = caps,
-        radiusOuter = Dp((boxHeight.value * 0.35).toFloat()),
         chartBarWidth = Dp(33f)
     )
 }
