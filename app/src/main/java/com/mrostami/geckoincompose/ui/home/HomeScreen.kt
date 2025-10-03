@@ -1,6 +1,8 @@
 package com.mrostami.geckoincompose.ui.home
 
 import androidx.compose.animation.AnimatedVisibility
+import androidx.compose.animation.core.Spring
+import androidx.compose.animation.core.spring
 import androidx.compose.animation.core.tween
 import androidx.compose.animation.fadeIn
 import androidx.compose.animation.fadeOut
@@ -26,6 +28,7 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalConfiguration
 import androidx.compose.ui.unit.Dp
+import androidx.compose.ui.unit.IntOffset
 import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.navigation.NavController
@@ -50,6 +53,11 @@ fun HomeScreen(
 
     val animationDelayMillis = 300L // Base delay for staggering
     val animationDurationMillis = 500 // Duration for fade/slide
+
+    val overshootSpringSpec = spring<IntOffset>(
+        dampingRatio = Spring.DampingRatioMediumBouncy,
+        stiffness = Spring.StiffnessLow
+    )
 
     LaunchedEffect(Unit) {
         delay(100)
@@ -85,24 +93,24 @@ fun HomeScreen(
                 enter = fadeIn(animationSpec = tween(durationMillis = animationDurationMillis)) +
                         slideInVertically(
                             initialOffsetY = { it / 2 }, // Start from halfway down
-                            animationSpec = tween(durationMillis = animationDurationMillis)
+                            animationSpec = overshootSpringSpec // tween(durationMillis = animationDurationMillis)
                         ),
                 exit = fadeOut(animationSpec = tween(durationMillis = animationDurationMillis / 2)) + // Faster exit
                         slideOutVertically(
                             targetOffsetY = { it / 2 },
                             animationSpec = tween(durationMillis = animationDurationMillis / 2)
-                        ) // Optional: Define exit if you plan to hide them
+                        )
             ) {
                 BtcChartWidget()
             }
 
-            Spacer(modifier = Modifier.size(Dp(8f)))
+            Spacer(modifier = Modifier.size(8.dp))
             AnimatedVisibility(
                 visible = dominanceWidgetVisibility,
                 enter = fadeIn(animationSpec = tween(durationMillis = animationDurationMillis)) +
                         slideInVertically(
                             initialOffsetY = { it / 2 },
-                            animationSpec = tween(durationMillis = animationDurationMillis)
+                            animationSpec = overshootSpringSpec// tween(durationMillis = animationDurationMillis)
                         ),
                 exit = fadeOut(animationSpec = tween(durationMillis = animationDurationMillis / 2)) +
                         slideOutVertically(
@@ -112,13 +120,13 @@ fun HomeScreen(
             ) {
                 MarketDominanceWidget()
             }
-            Spacer(modifier = Modifier.size(Dp(8f)))
+            Spacer(modifier = Modifier.size(8.dp))
             AnimatedVisibility(
                 visible = trendCoinsVisibility,
                 enter = fadeIn(animationSpec = tween(durationMillis = animationDurationMillis)) +
                         slideInVertically(
                             initialOffsetY = { it / 2 },
-                            animationSpec = tween(durationMillis = animationDurationMillis)
+                            animationSpec = overshootSpringSpec // tween(durationMillis = animationDurationMillis)
                         ),
                 exit = fadeOut(animationSpec = tween(durationMillis = animationDurationMillis / 2)) +
                         slideOutVertically(

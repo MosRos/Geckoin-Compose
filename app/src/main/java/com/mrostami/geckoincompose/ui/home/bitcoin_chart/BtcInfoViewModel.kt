@@ -12,6 +12,7 @@ import com.mrostami.geckoincompose.ui.base.BaseUiState
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.async
+import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.MutableSharedFlow
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.collectLatest
@@ -24,12 +25,6 @@ class BtcInfoViewModel @Inject constructor(
     private val btcChartInfoUseCase: BitcoinChartInfoUseCase,
     private val btcPriceUseCase: BitcoinSimplePriceUseCase,
 ) : ViewModel() {
-//    private val btcInfoStateMachine = BtcInfoStateMachine(
-//        initState = BtcInfoUiState.defaultInitState,
-//        coroutineScope = viewModelScope,
-//        btcChartInfoUseCase = btcChartInfoUseCase,
-//        btcPriceUseCase = btcPriceUseCase
-//    )
 
     var uiState: MutableStateFlow<BtcInfoUiState> =
         MutableStateFlow<BtcInfoUiState>(BtcInfoUiState.defaultInitState)
